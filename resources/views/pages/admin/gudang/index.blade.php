@@ -2,7 +2,7 @@
 
 <!-- main content -->
 <!-- page Title -->
-@section('page-title','Ini Halaman Gudang')
+@section('page-title','Halaman Gudang')
 <!-- Page Content -->
 @section('content')
 <div class="mt-2">
@@ -84,7 +84,7 @@
             <div class="modal-body">
                 <div class="form-group">
                     <label for="">Nama Gudang</label>
-                    <input type="hidden" id="id_gudang_edit" readonly>
+                    <input type="text" id="id_gudang_edit" readonly>
                     <input type="text" id="nama_gudang_edit" class="form-control" autocomplete="off">
                 </div>
                 <div class="form-group">
@@ -139,8 +139,8 @@
             data: null,
             render: function(data, type, row, meta) {
             return "<div>" +
-                "<button type='button' onclick='deleted(" + data.id_gudang + ")' class='btn btn-danger'>Hapus</button> | " +
-                "<button type='button' onclick='ambilData(" + data.id_gudang + ")' class='btn btn-success'>Edit</button>" +
+                `<button type='button' onclick='deleted("${data.id_gudang}")' class='btn btn-danger'>Hapus</button> ` +
+                `<button type='button' onclick='ambilData("${data.id_gudang}")' class='btn btn-success'>Edit</button>` +
             "</div>" ;
             }
           }
@@ -164,7 +164,9 @@
         var alamat_gudang = $('#alamat_gudang').val();
         var telepon_gudang = $('#telepon_gudang').val();
         var id_cabang = $('#id_cabang').val();
+        var id_gudang = '{{$inv}}';
         axios.post('{{url('/api/gudang/')}}',{
+            id_gudang:id_gudang,
             nama_gudang: nama_gudang,
             alamat_gudang: alamat_gudang,
             telepon_gudang:telepon_gudang,
@@ -185,10 +187,10 @@
 
     function ambilData(id)
     {
-        axios.get('{{url('/api/gudang')}}/'+ id)
+        axios.get('{{url('/api/gudang')}}/'+id)
         .then(function(res) {
             var isi = res.data
-            document.getElementById('id_gudang_edit').value=isi.data.id_gudang;
+            document.getElementById('id_gudang_edit').value=id;
             document.getElementById('nama_gudang_edit').value=isi.data.nama_gudang;
             document.getElementById('alamat_gudang_edit').value=isi.data.alamat_gudang;
             document.getElementById('telepon_gudang_edit').value=isi.data.telepon_gudang;

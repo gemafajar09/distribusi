@@ -11,8 +11,15 @@
         </tr>
     </thead>
     <tbody>
+        @foreach ($datax as $cost)
         <tr>
-
+            <td>{{$cost->inv_cost}}</td>
+            <td>{{$cost->id_sales}}</td>
+            <td>{{$cost->nama_sales}}</td>
+            <td>{{$cost->cost_nama}}</td>
+            <td>{{$cost->nominal}}</td>
+            <td>{{$cost->tanggal}}</td>
         </tr>
+        @endforeach
     </tbody>
 </table>

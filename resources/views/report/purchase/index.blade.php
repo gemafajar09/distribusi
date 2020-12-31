@@ -21,6 +21,7 @@
                    <th>Total After Diskon</th>
                    <th>Payment Status</th>
                    <th>Detail</th>
+                   <th>Print</th>
                 </tr>
             </thead>
             <tbody>
@@ -114,17 +115,21 @@
             data:'transaksi_tipe'
           },
           {
-            data:'total'
+            data:'total',
+            render: $.fn.dataTable.render.number( ',', '.', 2 )
           },
           {
-            data:'diskon'
+            data:'diskon',
+            render: $.fn.dataTable.render.number( ',', '.', 2 )
           },
           {
-            data:'bayar'
+            data:'bayar',
+            render: $.fn.dataTable.render.number( ',', '.', 2 )
           }
           ,
           {
-            data:'sisa'
+            data:'sisa',
+            render: $.fn.dataTable.render.number( ',', '.', 2 )
           },
           {
             data:'status'
@@ -134,6 +139,13 @@
             data: null,
             render: function(data, type, row, meta) {
             return "<div><button id='detail' onclick='detail(" + data.id_transaksi_purchase + ")'><i class='fa fa-list-ol'></i></button></div>";
+            }  
+          },
+          {
+            defaultContent:"",
+            data: null,
+            render: function(data, type, row, meta) {
+            return "<div><button id='detail' onclick='print(" + data.id_transaksi_purchase + ")'><i class='fa fa-print'></i></button></div>";
             }  
           }
         ]
@@ -157,17 +169,21 @@
             data:'transaksi_tipe'
           },
           {
-            data:'total'
+            data:'total',
+            render: $.fn.dataTable.render.number( ',', '.', 2 )
           },
           {
-            data:'diskon'
+            data:'diskon',
+            render: $.fn.dataTable.render.number( ',', '.', 2 )
           },
           {
-            data:'bayar'
+            data:'bayar',
+            render: $.fn.dataTable.render.number( ',', '.', 2 )
           }
           ,
           {
-            data:'sisa'
+            data:'sisa',
+            render: $.fn.dataTable.render.number( ',', '.', 2 )
           },
           {
             data:'status'
@@ -177,6 +193,13 @@
             data: null,
             render: function(data, type, row, meta) {
             return "<div><button id='detail' onclick='detail(" + data.id_transaksi_purchase + ")'><i class='fa fa-list-ol'></i></button></div>";
+            }  
+          },
+          {
+            defaultContent:"",
+            data: null,
+            render: function(data, type, row, meta) {
+            return "<div><button id='detail' onclick='print(" + data.id_transaksi_purchase + ")'><i class='fa fa-print'></i></button></div>";
             }  
           }
         ]
@@ -200,17 +223,21 @@
             data:'transaksi_tipe'
           },
           {
-            data:'total'
+            data:'total',
+            render: $.fn.dataTable.render.number( ',', '.', 2 )
           },
           {
-            data:'diskon'
+            data:'diskon',
+            render: $.fn.dataTable.render.number( ',', '.', 2 )
           },
           {
-            data:'bayar'
+            data:'bayar',
+            render: $.fn.dataTable.render.number( ',', '.', 2 )
           }
           ,
           {
-            data:'sisa'
+            data:'sisa',
+            render: $.fn.dataTable.render.number( ',', '.', 2 )
           },
           {
             data:'status'
@@ -220,6 +247,13 @@
             data: null,
             render: function(data, type, row, meta) {
             return "<div><button id='detail' onclick='detail(" + data.id_transaksi_purchase + ")'><i class='fa fa-list-ol'></i></button></div>";
+            }  
+          },
+          {
+            defaultContent:"",
+            data: null,
+            render: function(data, type, row, meta) {
+            return "<div><button id='detail' onclick='print(" + data.id_transaksi_purchase + ")'><i class='fa fa-print'></i></button></div>";
             }  
           }
         ]
@@ -242,17 +276,21 @@
             data:'transaksi_tipe'
           },
           {
-            data:'total'
+            data:'total',
+            render: $.fn.dataTable.render.number( ',', '.', 2 )
           },
           {
-            data:'diskon'
+            data:'diskon',
+            render: $.fn.dataTable.render.number( ',', '.', 2 )
           },
           {
-            data:'bayar'
+            data:'bayar',
+            render: $.fn.dataTable.render.number( ',', '.', 2 )
           }
           ,
           {
-            data:'sisa'
+            data:'sisa',
+            render: $.fn.dataTable.render.number( ',', '.', 2 )
           },
           {
             data:'status'
@@ -262,6 +300,13 @@
             data: null,
             render: function(data, type, row, meta) {
             return "<div><button id='detail' onclick='detail(" + data.id_transaksi_purchase + ")'><i class='fa fa-list-ol'></i></button></div>";
+            }  
+          },
+          {
+            defaultContent:"",
+            data: null,
+            render: function(data, type, row, meta) {
+            return "<div><button id='detail' onclick='print(" + data.id_transaksi_purchase + ")'><i class='fa fa-print'></i></button></div>";
             }  
           }
         ]
@@ -362,17 +407,21 @@ function load_range(waktu_awal,waktu_akhir,status,id_cabang){
             data:'transaksi_tipe'
           },
           {
-            data:'total'
+            data:'total',
+            render: $.fn.dataTable.render.number( ',', '.', 2 )
           },
           {
-            data:'diskon'
+            data:'diskon',
+            render: $.fn.dataTable.render.number( ',', '.', 2 )
           },
           {
-            data:'bayar'
+            data:'bayar',
+            render: $.fn.dataTable.render.number( ',', '.', 2 )
           }
           ,
           {
-            data:'sisa'
+            data:'sisa',
+            render: $.fn.dataTable.render.number( ',', '.', 2 )
           },
           {
             data:'status'
@@ -382,6 +431,13 @@ function load_range(waktu_awal,waktu_akhir,status,id_cabang){
             data: null,
             render: function(data, type, row, meta) {
             return "<div><button id='detail' onclick='detail(" + data.id_transaksi_purchase + ")'><i class='fa fa-list-ol'></i></button></div>";
+            }  
+          },
+          {
+            defaultContent:"",
+            data: null,
+            render: function(data, type, row, meta) {
+            return "<div><button id='detail' onclick='print(" + data.id_transaksi_purchase + ")'><i class='fa fa-print'></i></button></div>";
             }  
           }
         ]
@@ -459,6 +515,11 @@ function print_report(){
           }
           $('#modal').modal('show');
         });
+    }
+    
+    function print(id_transaksi_purchase){
+      
+      window.open(`{{url('/purchase/report_purchase_edit_today/')}}/`+id_transaksi_purchase);
     }
 
 </script>

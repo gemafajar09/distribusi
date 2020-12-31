@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Gentelella Alela! | </title>
+    <title>Distributor</title>
 
     <!-- Bootstrap -->
     <link href="{{asset('/assets/vendors/bootstrap/dist/css/bootstrap.min.css')}}" rel="stylesheet">
@@ -20,12 +20,15 @@
 
     <!-- Custom Theme Style -->
     <link href="{{asset('/assets/build/css/custom.min.css')}}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
   </head>
 
-  <body class="login">
+  <body class="login bg-primary">
+      <script src="{{asset('/assets/vendors/jquery/dist/jquery.min.js')}}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <div>
       <div class="login_wrapper">
-        <div class="animate form login_form p-3" style="box-shadow:0px 0px 5px black;">
+        <div class="animate form login_form p-3 bg-light rounded" style="box-shadow:0px 0px 5px black;">
           <section class="login_content">
             <form method="POST" action="{{ route('postLogin') }}">
             	@csrf 
@@ -37,7 +40,7 @@
                 <input type="password" name="password" class="form-control" placeholder="Password" required="" autocomplete="off" />
               </div>
               <div>
-                <button class="btn btn-success  submit">Log in</button>	
+                <button class="btn btn-success btn-block  submit">Login</button>	
               </div>
             </form>
               <div class="clearfix"></div>
@@ -58,6 +61,17 @@
             
           </section>
         </div>
+        <?php
+if(session('pesan') == TRUE)
+{
+?>
+  <script>
+    toastr.error('{{session("pesan")}}')
+  </script>
+<?php
+}
+
+?>
 
         <!-- <div id="register" class="animate form registration_form">
           <section class="login_content">

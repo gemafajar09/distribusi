@@ -14,7 +14,7 @@ class CabangController extends Controller
     {
         $this->rules = array(
             'id_cabang' => 'numeric',
-            'nama_cabang' => 'required|regex:/(^[A-Za-z0-9 ]+$)+/',
+            'nama_cabang' => 'required|regex:/(^[A-Za-z0-9 .,]+$)+/',
             'alamat' => 'required|regex:/(^[A-Za-z0-9 .,]+$)+/',
             'kode_cabang' => 'required|regex:/(^[A-Za-z0-9 ]+$)+/',
             'telepon' => 'required|numeric',

@@ -46,26 +46,32 @@
             <th>Invoice Id</th>
             <th>Invoice Date</th>
             <th>Customer Name</th>
-            <th>Salesman</th>
+            <th>Sales Name</th>
             <th>Total Credit Balance</th>
             <th>Total Payment</th>
             <th>Remainening Credit</th>
             <th>Due Date</th>
             <th>Status</th>
+            <th style="text-align:center">
+                Show
+            </th>
         </tr>
     </thead>
     <tbody>
         @foreach($hasil as $a)
-        <tr onclick="cekpayment('{{$a['invoice_id']}}')">
+        <tr>
             <td>{{$a['invoice_id']}}</td>
             <td>{{$a['invoice_date']}}</td>
             <td>{{$a['nama_customer']}}</td>
             <td>{{$a['nama_sales']}}</td>
             <td>Rp.{{number_format($a['totalsales'])}}</td>
             <td>Rp.{{number_format($a['payment'])}}</td>
-            <td>{{$a['remaining']}}</td>
+            <td>Rp.{{number_format($a['remaining'])}}</td>
             <td>{{$a['term_until']}}</td>
             <td>{{$a['status']}}</td>
+            <td style="text-align:center">
+                <button onclick="cekpayment('{{$a['invoice_id']}}')" type="button" class="btn btn-success btn-sm"><i class="fa fa-eye"></i></button>
+            </td>
         </tr>
         @endforeach
     </tbody>
@@ -77,11 +83,11 @@
         <div class="modal-content">
             <div class="modal-body">
                 <div class="tab">
-                    <button class="tablinks" onclick="openlink(event, 'Credit')">Credit Info</button>
+                    <button class="tablinks" active onclick="openlink(event, 'Credit')">Credit Info</button>
                     <button class="tablinks" onclick="openlink(event, 'Payment')">Payment Detail</button>
                 </div>
 
-                <div id="Credit" class="tabcontent">
+                <div id="Credit" class="tabcontent" style="display:bloc">
                     <div class="row">
                         <div class="col-md-3"><b>Credit ID</b></div>
                         <div class="col-md-3"><input type="text" id="creditid" readonly class="form-control"></div>
@@ -106,16 +112,35 @@
                                 <input type="text" id="amountss" class="form-control">
                                 <input type="hidden" id="statuss">
                             </div>
+                            <div class="form-group" style="display: none;" id="due">
+                                <label for="">Chnage Due Date</label><br>
+                                <input type="date" id="duedatee" class="form-control">
+                                <input type="hidden" id="id_transaksi">
+                            </div>
                             <br>
                             <div>
-                                <button type="button" class="btn btn-outline-success" id="pay"><i class="fa fa-pay">Get Payment</i></button>
+                                <button type="button" style="display:none" class="btn btn-outline-success" id="pay"><i class="fa fa-pay">Get Payment</i></button>
+                            </div>
+                            <div>
+                                <button type="button" style="display:none" class="btn btn-outline-success" id="change"><i class="fa fa-pay">Change Due Date</i></button>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div id="Payment" class="tabcontent">
-
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>invoice Id</th>
+                                <th>Tanggal Pembayaran</th>
+                                <th>Jumlah Pembayaran</th>
+                                <th>Type Pembayaran</th>
+                            </tr>
+                        </thead>
+                        <tbody id="detailget"></tbody>
+                    </table>
                 </div>
 
             </div>
@@ -125,11 +150,6 @@
 </div>
 
 <script>
-    // new AutoNumeric('#amountss', {
-    //     currencySymbol : 'Rp.',
-    //     decimalCharacter : ',',
-    //     digitGroupSeparator : '.',
-    // });
 
     $('#pay').click(function(){
         var invoice_credit = $('#creditid').val()
@@ -160,16 +180,40 @@
     function getdue() {
         var ceks = document.getElementById('changedue').checked;
         if (ceks == true) {
+            $('#due').show()
             $('#gets').hide()
+            $('#pay').hide()
+            $('#change').show()
         } else {
-            $('#gets').show()
+            $('#due').hide()
         }
     }
+
+    $('#change').click(function(){
+        var id_transaksi = $('#id_transaksi').val()
+        var tanggal = $('#duedatee').val()
+        axios.post("{{url('/api/changedue')}}",{
+            'id_transaksi':id_transaksi,
+            'tanggal':tanggal
+        }).then(function(res){
+            var data = res.data
+            if(data.status == 200)
+            {
+                window.location.reload()
+            }else{
+                $('#payments').modal('hide')
+                toastr.error('Change Due Date ERROR!')
+            }
+        })
+    })
 
     function getpay() {
         var ceks = document.getElementById('getpayment').checked;
         if (ceks == true) {
             $('#gets').show()
+            $('#due').hide()
+            $('#pay').show()
+            $('#change').hide()
         } else {
             $('#gets').hide()
         }
@@ -196,8 +240,10 @@
         }).then(function(res) {
             var data = res.data
             credit(id, id_user)
+            payments(id)
             $('#detailcredit').html(data)
             $('#payments').modal()
+            
         })
     }
 
@@ -210,11 +256,23 @@
             if (res.data.status == 200) {
                 $('#creditid').val(res.data.invoice)
                 $('#invoicesales').val(data.invoice_id)
+                $('#id_transaksi').val(data.id_transaksi_sales)
                 $('#creditamount').val(convertToRupiah(data.totalsales))
                 $('#duedate').val(data.term_until)
-                $('#remaining').val(convertToRupiah(data.totalsales))
+                $('#remaining').val(convertToRupiah(data.totalsales - res.data.payment))
                 $('#customers').val(data.nama_customer)
             }
+            document.getElementsByClassName("tabcontent")[0].style.display = "bloc";
+        })
+    }
+
+    function payments(id)
+    {
+        axios.post("{{url('/api/getpayments')}}", {
+            'id_transkasi': id
+        }).then(function(res) {
+            var data = res.data
+            $('#detailget').html(data)
         })
     }
 </script>

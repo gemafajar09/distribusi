@@ -21,14 +21,14 @@ class TransaksiPurchaseTmpController extends Controller
             'invoice_date'=>'date',
             'transaksi_tipe'=>'numeric',
             'term_until'=>'date',
-            'id_suplier'=>'numeric',
-            'produk_id'=>'numeric',
+            'id_suplier'=>'',
+            'produk_id'=>'',
             'quantity'=>'numeric',
             'unit_satuan_price'=>'numeric',
             'diskon'=>'numeric',
             'total_price'=>'numeric',
             'id_cabang'=>'numeric',
-            'id_gudang'=>'numeric'
+            'id_gudang'=>''
         );
 
         $this->dataisi = [];
@@ -156,6 +156,7 @@ class TransaksiPurchaseTmpController extends Controller
 
 
     public function register($tot,$dis,$down,$deb,$id_cabang){
+        $data_cabang = DB::table('tbl_cabang')->where('id_cabang',$id_cabang)->first();
         $data = TransaksiPurchaseTmp::where('id_cabang',$id_cabang)->select('invoice_id','invoice_date','transaksi_tipe','term_until','id_suplier','produk_id','quantity','unit_satuan_price','diskon','total_price','id_cabang','status','id_gudang')->get()->toArray();
         $data1 = $this->datatable($id_cabang);
         $datatmp =  $this->dataisi;
@@ -183,7 +184,7 @@ class TransaksiPurchaseTmpController extends Controller
             $calculate = [$tot,$dis,$down,$deb];
         $delete = TransaksiPurchaseTmp::where('id_cabang',$id_cabang)->delete();
         if($delete){
-            return view('report.purchase_transaksi',compact(['datatmp','calculate']));
+            return view('report.purchase_transaksi',compact(['datatmp','calculate','data_cabang']));
         }    
     }
 
@@ -202,8 +203,8 @@ class TransaksiPurchaseTmpController extends Controller
         
     }
 
-    public function calculateTmp(){
-        $tot_price = DB::table('transaksi_purchase_tmp')->sum('total_price');
+    public function calculateTmp($id_cabang){
+        $tot_price = DB::table('transaksi_purchase_tmp')->where('id_cabang',$id_cabang)->sum('total_price');
         return response()->json(['tot'=>$tot_price]);
     }
 

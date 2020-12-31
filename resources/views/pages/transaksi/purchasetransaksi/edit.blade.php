@@ -85,17 +85,21 @@
             data:'transaksi_tipe'
           },
           {
-            data:'total'
+            data:'total',
+            render: $.fn.dataTable.render.number( ',', '.', 2 )
           },
           {
-            data:'diskon'
+            data:'diskon',
+            render: $.fn.dataTable.render.number( ',', '.', 2 )
           },
           {
-            data:'bayar'
+            data:'bayar',
+            render: $.fn.dataTable.render.number( ',', '.', 2 )
           }
           ,
           {
-            data:'sisa'
+            data:'sisa',
+            render: $.fn.dataTable.render.number( ',', '.', 2 )
           },
           {
             data:'status'

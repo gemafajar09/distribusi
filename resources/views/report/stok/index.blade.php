@@ -35,8 +35,8 @@
     <select name="warehouse" id="filter_warehouse" class="form-control mt-3"></select>
     <br>
     <div class="text-center">
-    <button class="btn btn-success btn-sm" onclick="location.reload()">Refresh Report</button>
-    <button class="btn btn-danger btn-sm" onclick="print_report()">Generate Report</button>
+    <button class="btn btn-success btn-sm btn-block" onclick="location.reload()">Refresh Report</button>
+    <button class="btn btn-danger btn-sm btn-block" onclick="print_report()">Generate Report</button>
     </div>
 
 </div>
@@ -63,10 +63,12 @@
             data:'jumlah'
           },
           {
-            data:'capital_price'
+            data:'capital_price',
+            render: $.fn.dataTable.render.number( ',', '.', 2 )
           },
           {
-            data:'produk_harga'
+            data:'produk_harga',
+            render: $.fn.dataTable.render.number( ',', '.', 2 )
           },
           {
             data:'nama_cabang'
@@ -92,10 +94,12 @@
             data:'jumlah'
           },
           {
-            data:'capital_price'
+            data:'capital_price',
+            render: $.fn.dataTable.render.number( ',', '.', 2 )
           },
           {
-            data:'produk_harga'
+            data:'produk_harga',
+            render: $.fn.dataTable.render.number( ',', '.', 2 )
           },
           {
             data:'nama_cabang'

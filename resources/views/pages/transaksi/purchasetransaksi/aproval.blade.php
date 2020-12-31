@@ -90,19 +90,23 @@
           },
           {
             data:'total',
-            defaultContent:""
+            defaultContent:"",
+            render: $.fn.dataTable.render.number( ',', '.', 2 )
           },
           {
             data:'diskon',
-            defaultContent:""
+            defaultContent:"",
+            render: $.fn.dataTable.render.number( ',', '.', 2 )
           },
           {
             data:'bayar',
-            defaultContent:""
+            defaultContent:"",
+            render: $.fn.dataTable.render.number( ',', '.', 2 )
           },
           {
             data:'sisa',
-            defaultContent:""
+            defaultContent:"",
+            render: $.fn.dataTable.render.number( ',', '.', 2 )
           },
           {
             defaultContent:"",

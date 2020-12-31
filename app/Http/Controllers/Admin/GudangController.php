@@ -13,7 +13,7 @@ class GudangController extends Controller
     public function __construct()
     {
         $this->rules = array(
-            'id_gudang' => 'numeric',
+            'id_gudang' => '',
             'nama_gudang' => 'required',
             'alamat_gudang' => 'required|regex:/(^[A-Za-z0-9 .,]+$)+/',
             'telepon_gudang' => 'required|regex:/(^[0-9]+$)+/',
@@ -29,7 +29,23 @@ class GudangController extends Controller
         $cabang = DB::table('tbl_cabang')
                 ->select('id_cabang','nama_cabang')
                 ->get();
-        return view("pages.admin.gudang.index",compact('cabang'));
+                $codeinv = DB::table('tbl_gudang')->orderBy('id_gudang','desc')->first();
+                if($codeinv == NULL){
+                    $inv= "WAR-00001";
+                }else{
+                    $cekinv = substr($codeinv->id_gudang,6,9);
+                    $plus = (int)$cekinv + 1;
+                    $index = (int)$cekinv;
+                    if($index < 9){
+                        $inv = "WAR-0000".$plus;
+                    }
+                    else if($index >= 9){
+                        $inv = "WAR-000".$plus;
+                    }else if($index >= 99){
+                        $inv = "WAR-00".$plus;
+                    }
+                }
+        return view("pages.admin.gudang.index",compact(['cabang','inv']));
     }
 
     public function datatable()
@@ -62,7 +78,8 @@ class GudangController extends Controller
         if ($validator->fails()) {
             return response()->json(['messageForm' => $validator->errors(), 'status' => 422, 'message' => 'Data Tidak Valid']);
         } else {
-            return response()->json(['id' => Gudang::create($request->all())->id_gudang, 'message' => 'Data Berhasil Ditambahkan', 'status' => 200]);
+            $data = Gudang::insert($request->all());
+            return response()->json(['id' =>$data, 'message' => 'Data Berhasil Ditambahkan', 'status' => 200]);
         }
     }
 

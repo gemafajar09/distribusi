@@ -65,7 +65,7 @@
                 @endif
                 </div> 
             </td>
-            <td><input type="checkbox" id="cek" onclick="doalert(this,`{{$d['stok_id']}}`,`{{$d['produk_id']}}`,`{{$d['id_opname']}}`)"> Cek</td>
+            <td><input type="checkbox" id="cek" onclick="doalert(this,`{{$d['stok_id']}}`,`{{$d['id_opname']}}`)"> Cek</td>
         </tr>
         @endforeach
     </tbody>
@@ -105,24 +105,24 @@
                 panjang = isi.data.length
                 if (panjang == 3) {
                     for (let index = 0; index < panjang; index++) {
-                        $('#' + urut).append(`<div class='form-group col-sm-4'><label>${isi.data[index].maximum_unit_name}</label> <input type='number' id='unit${index+1}' value='0' style='width:100%;' onkeyup='cekbalance(${isi.data[index].stok_id},${isi.data[index].produk_id}),${capital_price}'></div> `)
+                        $('#' + urut).append(`<div class='form-group col-sm-4'><label>${isi.data[index].maximum_unit_name}</label> <input type='number' id='unit${index+1}' value='0' style='width:100%;' onkeyup='cekbalance(${isi.data[index].stok_id},${capital_price})' class='rounded'></div> `)
                     }
                 } else if (panjang == 2) {
                     $('#' + urut).append(`<input type='hidden' id='unit${1}' value='null'> `)
                     for (let index = 0; index < panjang; index++) {
-                        $('#' + urut).append(`<div class='form-group col-sm-4' style='margin-right:10px;'><label>${isi.data[index].maximum_unit_name}</label> <input type='number' id='unit${index+2}' value='0' style='width:100%;' onkeyup='cekbalance(${isi.data[index].stok_id},${isi.data[index].produk_id},${capital_price})' ></div>`)
+                        $('#' + urut).append(`<div class='form-group col-sm-4' style='margin-right:10px;'><label>${isi.data[index].maximum_unit_name}</label> <input type='number' id='unit${index+2}' value='0' style='width:100%;' onkeyup='cekbalance(${isi.data[index].stok_id},${capital_price})' class='rounded'></div>`)
                     }
                 } else if (panjang == 1) {
                     $('#' + urut).append(`<input  type='hidden' id='unit${1}' value='null'> `)
                     $('#' + urut).append(`<input type='hidden' id='unit${2}' value='null'> `)
                     for (let index = 0; index < panjang; index++) {
-                        $('#' + urut).append(`<div class="form-group col-sm-12"><label>${isi.data[index].maximum_unit_name}</label> <input type='number' id='unit${index+3}' value='0' style='width:100%;' onkeyup='cekbalance(${isi.data[index].stok_id},${isi.data[index].produk_id},${capital_price})'></div> `)
+                        $('#' + urut).append(`<div class="form-group col-sm-12"><label>${isi.data[index].maximum_unit_name}</label> <input type='number' id='unit${index+3}' value='0' style='width:100%;' onkeyup='cekbalance(${isi.data[index].stok_id},${capital_price})' class='rounded'></div> `)
                     }
                 }
             })
     }
 
-    function doalert(checkboxElem, stok_id, produk_id,id_opname=null) {
+    function doalert(checkboxElem, stok_id,id_opname=null) {
         let nextd = $('td#' + stok_id).next();
         let nextd1 = nextd.next();
         let nextd2 = nextd1.next();
@@ -152,7 +152,7 @@
                                 }
                             } 
                              
-                            axios.post('{{url('/api/stok_opname/ ')}}', {
+                            axios.post('{{url('/api/stok_opname')}}', {
                                 'stok_id': stok_id,
                                 'jumlah_fisik': unit3,
                                 'balance': status,
@@ -205,7 +205,7 @@
         return unit3;
     }
 
-    function cekbalance(stok_id, produk_id, unit_satuan_price) {
+    function cekbalance(stok_id, unit_satuan_price) {
         delay(function() {
             cabang = {{session()->get('cabang')}}
             unit1 = $('#' + stok_id).find('#unit1').val();
@@ -224,7 +224,7 @@
                             isi = res.data;
                             result = isi.data[0];
                             nextd.html(result.jumlah);
-                            nextd1.html(result.total_harga.toFixed(2));
+                            nextd1.html(result.total_harga);
                         });
                 });
         }, 300);

@@ -20,17 +20,18 @@
                     <th>Total</th>
                     <th>Diskon</th>
                     <th>Aproval</th>
+                    <th style="text-align: center;">Detail</th>
                     <th style="text-align: center;">Action</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($list as $a)
                 <tr>
-                    <td>{{$a->invoice_id}}</td>
-                    <td>{{$a->invoice_date}}</td>
-                    <td>{{$a->nama_sales}}</td>
-                    <td>Rp.{{number_format($a->totalsales)}}</td>
-                    <td>Rp.{{number_format($a->diskon)}}</td>
+                    <td>{{$a['invoice_id']}}</td>
+                    <td>{{$a['invoice_date']}}</td>
+                    <td>{{$a['nama_sales']}}</td>
+                    <td>Rp.{{number_format($a['totalsales'])}}</td>
+                    <td>Rp.{{number_format($a['diskon'])}}</td>
                     <td>
                         <select name="aproves" id="aproves" class="form-control">
                             <option value="">-SELECT-</option>
@@ -39,7 +40,10 @@
                         </select>
                     </td>
                     <td style="text-align: center;">
-                        <button onclick="approves('{{$a->id_transaksi_sales}}','{{$a->invoice_id}}')" class="btn btn-outline-success">Approve</button>
+                        <button type="button" onclick="cekdetail('{{$a['invoice_id']}}')" class="btn btn-success">Detail</button>
+                    </td>
+                    <td style="text-align: center;">
+                        <button onclick="approves('{{$a['id_transaksi_sales']}}','{{$a['invoice_id']}}')" class="btn btn-outline-success">Approve</button>
                     </td>
                 </tr>
                 @endforeach
@@ -51,32 +55,24 @@
 </div>
 </div>
 
-<!-- Modal -->
-<div class="modal fade" id="modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header bg-dark text-white">
-                <h5 class="modal-title" id="exampleModalLabel"><i class="fa fa-minus"></i> Detail Purchase</h5>
-            </div>
-            <div class="modal-body">
-                <table class="table table-bordered">
-                  <thead>
-                    <tr>
-                      <td>Produk Nama</td>
-                      <td>Quantity</td>
-                      <td>Price</td>
-                    </tr>
-                  </thead>
-                  <tbody id="detailinvoice">
+<div id="detailm" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
 
-                  </tbody>
-                </table>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Keluar</button>
-            </div>
-        </div>
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Detail Transaction</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body" id="detailsemua">
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
     </div>
+
+  </div>
 </div>
 
 <script>
@@ -89,6 +85,15 @@
             'invoice_id':invoice
         }).then(function(res){
             window.location.reload()
+        })
+    }
+
+    function cekdetail(id)
+    {
+        axios.get("{{url('/api/detailapp')}}/"+id).then(function(res){
+            var data = res.data
+            $('#detailm').modal()
+            $('#detailsemua').html(data)
         })
     }
 

@@ -8,7 +8,7 @@
             <th>CUSTOMER NAME</th>
             <th>TOTAL</th>
             <th>DISCOUNT</th>
-            <th>DP</th>
+            <!--<th>DP</th>-->
             <th>TOTAL AFTER DISCOUNT</th>
             <th>TRANSACTION</th>
         </tr>
@@ -23,7 +23,7 @@
             <td>{{$a->nama_customer}}</td>
             <td>Rp.{{number_format($a->totalsales)}}</td>
             <td>{{$a->diskon}}%</td>
-            <td>0</td>
+            <!--<td>0</td>-->
             <td>Rp.{{$a->totalsales - ($a->totalsales * $a->diskon / 100)}}</td>
             <td>{{$a->transaksi_tipe}}</td>
         </tr>

@@ -50,34 +50,39 @@ class PurchaseReturnReportController extends Controller
     }
 
     public function report_all($id_cabang){
+        $data_cabang = DB::table('tbl_cabang')->where('id_cabang',$id_cabang)->first();
         $data = DB::table('transaksi_purchase_return')->where('transaksi_purchase_return.id_cabang',$id_cabang)->join('tbl_suplier','tbl_suplier.id_suplier','=','transaksi_purchase_return.id_suplier')->get();
-        return view('report.purchasereturn.reportpurchasereturn',compact('data'));
+        return view('report.purchasereturn.reportpurchasereturn',compact(['data','data_cabang']));
     }
 
     public function report_today($id_cabang){
+        $data_cabang = DB::table('tbl_cabang')->where('id_cabang',$id_cabang)->first();
         $data = DB::table('transaksi_purchase_return')->where('transaksi_purchase_return.id_cabang',$id_cabang)->join('tbl_suplier','tbl_suplier.id_suplier','=','transaksi_purchase_return.id_suplier')
         ->select('return_id','return_date','nama_suplier',DB::raw('sum(price) as price'))->groupBy('return_id','return_date','nama_suplier')
         ->whereRaw('Date(return_date) = CURDATE()')->get();;
-        return view('report.purchasereturn.reportpurchasereturn',compact('data'));
+        return view('report.purchasereturn.reportpurchasereturn',compact(['data','data_cabang']));
     }
     public function report_month($month,$year,$id_cabang){
+        $data_cabang = DB::table('tbl_cabang')->where('id_cabang',$id_cabang)->first();
         $data = DB::table('transaksi_purchase_return')->where('transaksi_purchase_return.id_cabang',$id_cabang)->join('tbl_suplier','tbl_suplier.id_suplier','=','transaksi_purchase_return.id_suplier')
         ->select('return_id','return_date','nama_suplier',DB::raw('sum(price) as price'))->groupBy('return_id','return_date','nama_suplier')
         ->whereMonth('return_date',$month)->whereYear('return_date',$year)->get();
-        return view('report.purchasereturn.reportpurchasereturn',compact('data'));
+        return view('report.purchasereturn.reportpurchasereturn',compact(['data','data_cabang']));
     }
 
     public function report_year($year,$id_cabang){
+        $data_cabang = DB::table('tbl_cabang')->where('id_cabang',$id_cabang)->first();
         $data = DB::table('transaksi_purchase_return')->where('transaksi_purchase_return.id_cabang',$id_cabang)->join('tbl_suplier','tbl_suplier.id_suplier','=','transaksi_purchase_return.id_suplier')
         ->select('return_id','return_date','nama_suplier',DB::raw('sum(price) as price'))->groupBy('return_id','return_date','nama_suplier')
         ->whereYear('return_date',$year)->get();
-        return view('report.purchasereturn.reportpurchasereturn',compact('data'));
+        return view('report.purchasereturn.reportpurchasereturn',compact(['data','data_cabang']));
     }
     public function report_range($from,$to,$id_cabang){
+        $data_cabang = DB::table('tbl_cabang')->where('id_cabang',$id_cabang)->first();
         $data = DB::table('transaksi_purchase_return')->where('transaksi_purchase_return.id_cabang',$id_cabang)->join('tbl_suplier','tbl_suplier.id_suplier','=','transaksi_purchase_return.id_suplier')
         ->select('return_id','return_date','nama_suplier',DB::raw('sum(price) as price'))->groupBy('return_id','return_date','nama_suplier')
         ->whereBetween('return_date',[$from, $to])->get();
-        return view('report.purchasereturn.reportpurchasereturn',compact('data'));
+        return view('report.purchasereturn.reportpurchasereturn',compact(['data','data_cabang']));
     }
 
     // untuk detail report belum sempat ringkas

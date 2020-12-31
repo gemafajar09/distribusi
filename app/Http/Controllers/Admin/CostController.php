@@ -41,21 +41,22 @@ class CostController extends Controller
 
         $data['id_cabang'] = $id_cabang;
         $data['invoice'] = $invoice;
-        $data['datasales'] = Sales::all();
+        $data['datasales'] = DB::table('tbl_sales')->get();
 
         return view("pages.admin.cost.index", $data);
     }
 
-    public function datatable()
+    public function datatable($id_cabang)
     {
         // untuk datatables Sistem Join Query Builder
-        $data = $this->join_builder();
+        $data = $this->join_builder($id_cabang);
         return datatables()->of($data)->toJson();
     }
 
-    public function join_builder($id = null)
+    public function join_builder($id_cabang)
     {
         $data = DB::table('tbl_cost')
+            ->where('tbl_cost.id_cabang', $id_cabang)
             ->leftJoin('tbl_sales', 'tbl_cost.id_sales', '=', 'tbl_sales.id_sales')
             ->select('*')
             ->orderby('cost_id', 'asc')

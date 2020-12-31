@@ -34,12 +34,12 @@ class LoginController extends Controller
         $data = DB::table('tbl_user')->where('username',$username)->first();
         // dd($data);
         if(empty($data)){
-            return '<script type="text/javascript">alert("Username Atau Password Salah!");window.location="/login";</script>';
+            return back()->with('pesan','Username Atau Password Salah!');
         }else{
         $cek = Hash::check($password, $data->password);
         if($cek == false)
         {
-            return '<script type="text/javascript">alert("Username Atau Password Salah!");window.location="/login";</script>';
+            return back()->with('pesan','Username Atau Password Salah!');
         }
         else
         {
@@ -61,7 +61,11 @@ class LoginController extends Controller
                 elseif ($data->level == "3")
 		        {
 		        	return redirect('/');
-		        }       
+		        }
+		        elseif ($data->level == "4")
+		        {
+		        	return redirect('/');
+		        } 
         }
     }
     }

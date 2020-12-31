@@ -16,15 +16,15 @@ class CustomerController extends Controller
             'id_customer'=>'numeric',
             'nama_customer'=>'required|regex:/(^[A-Za-z0-9 ]+$)+/',
             'nama_perusahaan'=>'required|regex:/(^[A-Za-z0-9 ]+$)+/',
-            'credit_plafond'=>'required|numeric',
+            'credit_plafond'=>'numeric',
             'alamat'=>'required|regex:/(^[A-Za-z0-9 .,]+$)+/',
-            'negara'=>'required|regex:/(^[A-Za-z0-9 ]+$)+/',
+            'negara'=>'regex:/(^[A-Za-z0-9 ]+$)+/',
             'kota'=>'required|regex:/(^[A-Za-z0-9 ]+$)+/',
-            'telepon'=>'required|numeric',
-            'kartu_kredit'=>'required|numeric',
-            'fax'=>'required|numeric',
-            'id_sales'=>'required|numeric',
-            'note'=>'required|regex:/(^[A-Za-z0-9 .,]+$)+/',
+            'telepon'=>'numeric',
+            'kartu_kredit'=>'numeric',
+            'fax'=>'numeric',
+            'id_sales'=>'required',
+            'note'=>'regex:/(^[A-Za-z0-9 .,]+$)+/',
             'id_cabang'=>'numeric'
         );
         $this->messages = array(

@@ -18,7 +18,9 @@ class CreateReturnsalesTable extends Migration
             $table->date('return_date');
             $table->string('compensation',50);
             $table->date('date_term')->nullable();
-            $table->string('id_sales',11);
+            $table->string('id_sales_inv',100);
+            $table->integer('totalbiaya');
+            $table->integer('id_user');
         });
     }
 

@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link href="{{asset('/assets/vendors/bootstrap/dist/css/bootstrap.min.css')}}" rel="stylesheet">
-    <style type="text/css" media="print">
-        @page { size: landscape; }
-    </style>
 </head>
 <body>
     <div class="container">
@@ -17,10 +14,9 @@
         <div class="row">
             <div class="col-sm-8">
         <div class="text-left">
-            <h5>SUMBER CAHAYA REZEKI</h5>
-            <h6>Jl. BY PASS TALUAK</h6>
-            <h6>BUKITTINGGI, INDONESIA</h6>
-            <H6>PHONE : 085375715757 FAX : (0752) 8810863</H6>
+            <h5>{{$data_cabang->nama_cabang}}</h5>
+            <h6>{{$data_cabang->alamat}}</h6>
+            <H6>PHONE : {{$data_cabang->telepon}} EMAIL : {{$data_cabang->email}}</H6>
             <br>
             <p>Suplier : {{$datatmp[0]['nama_suplier']}}</p>
         </div>
@@ -65,7 +61,7 @@
                             <td>P.I.C</td>
                         </tr>
                         <tr>
-                            <td>ADMIN1</td>
+                            <td>ADMIN</td>
                         </tr>
                     </table>
                 </div>
@@ -90,7 +86,6 @@
         <tr>
             <td>Item Description</td>
             <td>Quantity</td>
-            <td>Price</td>
             <td>Total</td>
             <td>Diskon</td>
             <td>Amount</td>
@@ -101,10 +96,9 @@
         <tr>
             <td>{{$d['produk_nama']}}</td>
             <td>{{$d['stok_quantity']}}</td>
-            <td>{{$d['unit_satuan_price']}}</td>
-            <td>{{$d['total']}}</td>
-            <td>{{$d['diskon']}}</td>
-            <td>{{$d['total_price']}}</td>
+            <td>{{"Rp " . number_format($d['total'],2,',','.')}}</td>
+            <td>{{"Rp " . number_format($d['diskon'],2,',','.')}}</td>
+            <td>{{"Rp " . number_format($d['total_price'],2,',','.')}}</td>
         </tr>
         @endforeach
     </tbody>
@@ -116,20 +110,20 @@
             <hr style="border-top: 5px solid black;">
             <div class="row mb-5">
                 <div class="col-sm-8">
-                    <p class="ml-4">Prepared By</p>
+                    <p class="ml-4">Disiapkan Oleh</p>
                 </div>
                 <div class="col-sm-4">
-                    <p class="ml-3">Approved By</p>
+                    <p class="ml-3">Disetujui Oleh</p>
                 </div>
             </div>
             <div class="row">
             <div class="col-sm-8">
                     <p>............................</p>
-                    <p>Date : {{date('d-m-Y')}}</p>
+                    <p>Tanggal : {{date('d-m-Y')}}</p>
                 </div>
                 <div class="col-sm-4">
                 <p>............................</p>
-                    <p>Date : </p>
+                    <p>Tanggal : </p>
                 </div>
             </div>
         </div>
@@ -137,23 +131,23 @@
             <table  border="2" style="width: 100%;">
                 <tr>
                     <td style="border-bottom: none;">Total Purchase :</td>
-                    <td>{{$calculate[0]}}</td>
+                    <td>{{"Rp " . number_format($calculate[0],2,',','.')}}</td>
                 </tr>
                 <tr>
                     <td>Final Discount :</td>
-                    <td>{{$calculate[1]}}</td>
+                    <td>{{"Rp " . number_format($calculate[1],2,',','.')}}</td>
                 </tr>
                 <tr>
                     <td>Total After Discount :</td>
-                    <td>{{$calculate[0]-$calculate[1]}}</td>
+                    <td>{{"Rp " . number_format($calculate[0]-$calculate[1],2,',','.')}}</td>
                 </tr>
                 <tr>
                     <td>Down Payment :</td>
-                    <td>{{$calculate[2]}}</td>
+                    <td>{{"Rp " . number_format($calculate[2],2,',','.')}}</td>
                 </tr>
                 <tr>
                     <td>Total Debt Balance :</td>
-                    <td>{{$calculate[3]}}</td>
+                    <td>{{"Rp " . number_format($calculate[3],2,',','.')}}</td>
                 </tr>
             </table>
         </div>

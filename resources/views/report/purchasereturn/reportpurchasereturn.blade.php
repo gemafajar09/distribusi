@@ -12,14 +12,14 @@
             <div class="col-sm-12">
         <div class="text-center">
             <h4>Report Purchase Return</h4>
-            <h5>SUMBER CAHAYA REZEKI</h5>
-            <h6>Jl. BY PASS TALUAK BUKITTINGGI, INDONESIA</h6>
-            <H6>PHONE : 085375715757 FAX : (0752) 8810863</H6>
-            <br>
+            <h5>{{$data_cabang->nama_cabang}}</h5>
+            <h6>{{$data_cabang->alamat}}</h6>
+            <H6>PHONE : {{$data_cabang->telepon}} EMAIL : {{$data_cabang->email}}</H6>
+            <hr style="border:2px solid black;">
         </div>
         </div>
         </div>
-        <br>
+        
     <table border="2" id="tabel"  style="border: 2px solid black; width:100%;">
     <thead>
     <tr>
@@ -35,7 +35,7 @@
                 <td>{{$d->return_id}}</td>
                 <td>{{$d->nama_suplier}}</td>
                 <td>{{$d->return_date}}</td>
-                <td>{{$d->price}}</td>
+                <td>{{"Rp " . number_format($d->price,2,',','.')}}</td>
                 </tr>
                 @endforeach
             </tbody>

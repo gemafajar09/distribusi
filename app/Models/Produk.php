@@ -14,7 +14,7 @@ class Produk extends Model
     protected $primaryKey = 'produk_id';
     // define fillable
     protected $fillable = [
-        'id_type_produk', 'produk_brand', 'produk_nama', 'produk_harga', 'stok',
+        'id_type_produk', 'produk_brand', 'produk_nama', 'produk_harga', 'stok', 'harga_modal',
     ];
 
     public function type()

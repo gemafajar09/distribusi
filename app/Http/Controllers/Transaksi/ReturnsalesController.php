@@ -7,11 +7,12 @@ use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Validator;
 use App\Returnsalestmp;
+use App\Returnsales;
 use App\Models\Sales;
 use App\Models\Customer;
 use DB;
 use Session;
-
+ 
 class ReturnsalesController extends Controller
 {
     public function index()
@@ -31,7 +32,7 @@ class ReturnsalesController extends Controller
         if ($inv == NULL) {
             $invoice = 'RTS-' . date('Ym') . "-" . $user . '-1';
         } else {
-            $cekinv = substr($inv->invoice_id, 15, 50);
+            $cekinv = substr($inv->id_returnsales, 15, 50);
             $plus = (int)$cekinv + 1;
             $invoice = 'RTS-' . date('Ym') . "-" . $user .  '-' . $plus;
         }
@@ -211,55 +212,82 @@ class ReturnsalesController extends Controller
         ->where('returnsalestmps.return_date', $date)
         ->get();
         // dd($data);
-        $init = [];
         $format = '%d %s |';
+        $init = [];
         $stok = [];
         foreach ($data as $a) {
             $proses = DB::table('tbl_unit')->where('produk_id', $a->produk_id)
-                ->join('tbl_satuan', 'tbl_unit.maximum_unit_name', '=', 'tbl_satuan.id_satuan')
-                ->select('id_unit', 'nama_satuan as unit', 'default_value')
-                ->orderBy('id_unit', 'ASC')
-                ->get();
-            $hasilbagi = 0;
+            ->join('tbl_satuan', 'tbl_unit.maximum_unit_name', '=', 'tbl_satuan.id_satuan')
+            ->select('id_unit', 'nama_satuan as unit', 'default_value')
+            ->orderBy('id_unit', 'ASC')
+            ->get();
+        // nilai jumlah dari tabel stok
+        $jumlah = $a->quantity;
+        $hasilbagi = 0;
+            $stokquantity = [];
             foreach ($proses as $index => $list) {
-                $banyak =  sizeof($proses);
-                $sisa = $a->quantity % $list->default_value;
-                $hasilbagi = ($a->quantity - $sisa) / $list->default_value;
-                $satuan[$index] = $list->unit;
-                $value_default[$index] = $list->default_value;
-                $lebih[$index] = $sisa;
-                if ($index == 0) {
-                    if ($sisa > 0) {
-                        $stok[$index] = sprintf($format, $sisa, $list->unit);
+                $banyak = sizeof($proses);
+                if($index == 0 ){
+                    $sisa = $jumlah % $list->default_value;
+                    $hasilbagi = ($jumlah-$sisa)/$list->default_value;
+                    $satuan[$index] = $list->unit;
+                    $value[$index] = $list->default_value;
+                    $lebih[$index] = $sisa;
+                    if ($sisa > 0){
+                        $stok[] = sprintf($format, $sisa, $list->unit);
                     }
-                    if ($banyak == $index + 1) {
-                        $stok[$index] = sprintf($format, $hasilbagi, $list->unit);
+                    if($banyak == $index+1){
+                        $satuan = array();
+                        $stok[] = sprintf($format, $hasilbagi, $satuan[$index-1]);
+                        $stokquantity = array_values($stok);
+                        $stok = array();
                     }
-                } else if ($index == 1) {
-                    if ($sisa > 0) {
-                        $stok[$index - 1] = sprintf($format, $sisa + $lebih[$index - 1], $satuan[$index - 1]);
+                }else if($index == 1){
+                    $sisa = $hasilbagi % $list->default_value;
+                    $hasilbagi = ($hasilbagi-$sisa)/$list->default_value;
+                    $satuan[$index] = $list->unit;
+                    $value[$index] = $list->default_value;
+                    $lebih[$index] = $sisa;
+                    if($sisa > 0){
+                        $stok[] = sprintf($format, $sisa+$lebih[$index-1], $satuan[$index-1]);
+                    }else{
+                        $stok[] = sprintf($format, 0, $satuan[$index-1]);
                     }
-                    if ($banyak == $index + 1) {
-                        $stok[$index] = sprintf($format, $hasilbagi, $list->unit);
+                    if($banyak == $index+1){
+                        $satuan = array();
+                        $stok[] = sprintf($format, $hasilbagi, $list->unit);
+                        $stokquantity = array_values($stok);
+                        $stok = array();
                     }
-                } else if ($index == 2) {
-                    if ($sisa > 0) {
-                        $stok[$index - 1] = sprintf($format, $sisa,  $satuan[$index - 1]);
+                }else if($index == 2){
+                    $sisa = $hasilbagi % $list->default_value;
+                    $hasilbagi = ($hasilbagi-$sisa)/$list->default_value;
+                    $satuan[$index] = $list->unit;
+                    $value[$index] = $list->default_value;
+                    $lebih[$index] = $sisa;
+                    if($sisa > 0){
+                        $stok[] = sprintf($format, $sisa, $satuan[$index-1]);
+                    }else{
+                        $stok[] = sprintf($format, 0, $satuan[$index-1]);
                     }
-                    if ($banyak == $index + 1) {
-                        $stok[$index] = sprintf($format, $hasilbagi, $list->unit);
+                    if($banyak == $index+1){
+                        $satuan = array();
+                        $stok[] = sprintf($format, $hasilbagi, $list->unit);
+                        $stokquantity = array_values($stok);
+                        $stok = array();
                     }
-                }
-            }
+                }    
+            } 
             $init[] = array(
-                'stok_id' => $a->stok_id,
+                'stok_id' => $a->produk_id,
                 'produk_nama' => $a->produk_nama,
                 'produk_harga' => $a->price,
                 'total' => $a->quantity * $a->harga_satuan,
-                'amount' => ($a->quantity * $a->harga_satuan),
+                'amount' => ($a->quantity * $a->harga_satuan) - $a->diskon,
                 'id_tmpreturn' => $a->id_tmpreturn,
+                'diskon' => $a->diskon,
                 'note' => $a->note,
-                'quantity' => implode(" ", $stok)
+                'quantity' => implode(" ", $stokquantity)
             );
         }
         return view('pages.transaksi.salestransaksi.tabelreturntmp',compact('init'));
@@ -308,6 +336,46 @@ class ReturnsalesController extends Controller
             } else {
                 return response()->json(['status' => 422, 'message' => 'Data Tidak Valid']);
             }
+        }
+    }
+
+    public function rekaptransaksir(Request $r)
+    {
+        $input = new Returnsales();
+        $input->id_returnsales	 = $r->invoiceid;
+        $input->return_date = $r->invoicedate;
+        $input->compensation = $r->compensation;
+        $input->date_term = $r->term_util;
+        $input->id_sales_inv = $r->idsalesinv;
+        $input->totalbiaya = $r->totalsales;
+        $input->id_user = $r->id_user;
+        $input->save();
+
+        $id_user = $r->id_user;
+        $data = DB::table('returnsalestmps')->where('id_returnsales', $r->invoiceid)->where('id_user', $id_user)->get();
+        foreach ($data as $a) {
+            DB::table('returnsalesdetail')->insert([
+                'id_returnsales' => $a->id_returnsales,
+                'return_date' => $a->return_date,
+                'id_stok' => $a->id_stok,
+                'price' => $a->price,
+                'quantity' => $a->quantity,
+                'diskon' => $a->diskon,
+                'id_user' => $a->id_user,
+                'note' => $a->note,
+                'harga_satuan' => $a->harga_satuan
+            ]);
+            // update stok
+            $lihat = DB::table('tbl_stok')->where('stok_id',$a->id_stok)->first();
+            $stok = $lihat->jumlah + $a->quantity;
+            DB::table('tbl_stok')->where('stok_id',$a->id_stok)->update(['jumlah' => $stok]);
+            // hapus
+            DB::table('returnsalestmps')->where('id_tmpreturn', $a->id_tmpreturn)->delete();
+        }
+        if ($input == TRUE) {
+            return response()->json(['status' => 200, 'invoice_id' => $r->invoiceid]);
+        } else {
+            return response()->json(['message' => 'Data Tidak Ditemukan', 'status' => 404]);
         }
     }
 

@@ -35,11 +35,13 @@
                 </tr>
             </thead>
             <tbody>
+                @foreach ($datas as $d)
                 <tr>
-                    <td>Test</td>
-                    <td>Test</td>
-                    <td>Test</td>
+                    <td>{{$d['produk_id']}}</td>
+                    <td>{{$d['produk_nama']}}</td>
+                    <td>{{$d['quantity']}}</td>
                 </tr>
+                @endforeach
             </tbody>
         </table>
 

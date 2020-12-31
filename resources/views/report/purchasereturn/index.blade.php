@@ -105,7 +105,8 @@
             data:'return_date'
           },
           {
-            data:'price'
+            data:'price',
+            render: $.fn.dataTable.render.number( ',', '.', 2 )
           },
           {
             defaultContent:"",
@@ -135,7 +136,8 @@
             data:'return_date'
           },
           {
-            data:'price'
+            data:'price',
+            render: $.fn.dataTable.render.number( ',', '.', 2 )
           },
           {
             defaultContent:"",
@@ -165,7 +167,8 @@
             data:'return_date'
           },
           {
-            data:'price'
+            data:'price',
+            render: $.fn.dataTable.render.number( ',', '.', 2 )
           },
           {
             defaultContent:"",
@@ -194,7 +197,8 @@
             data:'return_date'
           },
           {
-            data:'price'
+            data:'price',
+            render: $.fn.dataTable.render.number( ',', '.', 2 )
           },
           {
             defaultContent:"",
@@ -298,7 +302,8 @@ function load_range(waktu_awal,waktu_akhir,id_cabang){
             data:'return_date'
           },
           {
-            data:'price'
+            data:'price',
+            render: $.fn.dataTable.render.number( ',', '.', 2 )
           },
           {
             defaultContent:"",
@@ -363,7 +368,7 @@ function print_report(){
     function detail(return_id){
       $('#detailinvoice').html('');
       cabang = {{session()->get('cabang')}};
-      axios.post('{{url('/api/report_purchase_return/detailpurchasereturn/')}}/',{
+      axios.post('{{url('/api/report_purchase_return/detailpurchasereturn')}}',{
           'return_id':return_id,
           'id_cabang':cabang
       })

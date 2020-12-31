@@ -27,8 +27,8 @@
         <br>
         <div class="range" id="range">
             <legend>Range</legend>
-            <input type="date" class="form-control" id="waktu_awal" onchange="range_report()" value="0"><br>
-            <input type="date" class="form-control" id="waktu_akhir" onchange="range_report()" value="0">
+            <input type="date" class="form-control" id="waktu_awal"><br>
+            <input type="date" class="form-control" id="waktu_akhir">
         </div>
         <br>
         <div>
@@ -50,59 +50,9 @@
     </div>
 </div>
 <script>
-    // $(document).ready(function(){
-    //       tables = $('#tabel').DataTable({
-    //         processing : true,
-    //         serverSide : true,
-    //         ajax:{
-    //           url: "{{ url('/api/cost_report/findid') }}",
-    //         },
-    //         columns:[
-    //           {
-    //             data: 'inv_cost'
-    //           },
-    //           {
-    //             data:'id_sales'
-    //           },
-    //           {
-    //             data:'nama_sales'
-    //           },
-    //           {
-    //             data:'cost_nama'
-    //           },
-    //           {
-    //             data:'nominal'
-    //           },
-    //           {
-    //             data:'tanggal'
-    //           }
-    //         ]
-    //       });
+    // $(document).ready(function () {
+    //     $('#isi').load('{{ route('table_cost')}}')
     // });
-
-    // document.getElementById('alldata').addEventListener('click',function(){
-    //     var cek = document.getElementById('alldata').checked;
-    //     if(cek == true)
-    //     {
-    //         document.getElementById('pilihanfilter').addEventListener('change', function () {
-    //             var pilihanfilter = document.getElementById('pilihanfilter').value;
-    //             var fil = document.getElementById('inputpilihan').value
-    //             if(pilihanfilter == 'idrequester'){
-    //                 //
-    //                 pilihanfilter(fil)
-    //             } else if(pilihanfilter == 'namarequester'){
-    //                 //
-    //                 pilihanfilter(fil)
-    //             } else if(pilihanfilter == 'costnama'){
-    //                 //
-    //                 pilihanfilter(fil)
-    //             }
-    //         })
-    //     }else{
-
-    //     }
-    // })
-
 
         $("#waktu_awal" ).prop( "readonly", true );
         $("#waktu_akhir" ).prop( "readonly", true );
@@ -111,7 +61,7 @@
             $("waktu_akhir").val('0');
             $("#waktu_awal" ).prop( "readonly", true );
             $("#waktu_akhir" ).prop( "readonly", true );
-            nilai = $('#ket_waktu').val();
+            var nilai = $('#ket_waktu').val();
             $('#wadah').html('');
 
             if(nilai ==3){
@@ -146,25 +96,13 @@
                 $("#waktu_awal" ).prop( "readonly", false);
                 $("#waktu_akhir" ).prop( "readonly", false);
             }
+            $("#waktu_awal").val("")
+            $("#waktu_akhir").val("")
         })
-
-        // $('#wadah').on('change', '#month', function() {
-        // month = $('#month').val();
-        // year = $('#year').val();
-        // if ( $.fn.DataTable.isDataTable('#tabel') ) {
-        //         $('#tabel').DataTable().destroy();
-        //     }
-        // });
-
-        // $('#wadah').on('change', '#year_filter', function() {
-        // year = $('#year_filter').val();
-        // if ( $.fn.DataTable.isDataTable('#tabel') ) {
-        //         $('#tabel').DataTable().destroy();
-        //     }
-        // });
 
     function pilihanfilter()
     {
+        id_cabang = {{session()->get('cabang')}}
         var filterdata = $('#pilihanfilter').val()
         if(filterdata == null)
         {
@@ -208,103 +146,14 @@
         }
         var ket_waktu = $('#ket_waktu').val();
 
-        // console.log(caridata);
-        // axios.get("{{url('/api/cost_report/findid')}}/" + filterdata + "/" + caridata + "/" + ket_waktu + "/"+  filtertahun +"/" + filterbulan + "/" +filter_tahun + "/" +waktuawal + "/" +waktuakhir)
-        // .then(function(res){
-        //     tables = $('#tabel').DataTable({
-        //     processing : true,
-        //     serverSide : true,
-        //     ajax:{
-        //       url: "{{ url('/api/cost_report/findid') }}/" + filterdata + "/" + caridata + "/" + ket_waktu + "/"+  filtertahun +"/" + filterbulan + "/" +filter_tahun + "/" +waktuawal + "/" +waktuakhir,
-        //     },
-        //     columns:[
-        //       {
-        //         data: 'inv_cost'
-        //       },
-        //       {
-        //         data:'id_sales'
-        //       },
-        //       {
-        //         data:'nama_sales'
-        //       },
-        //       {
-        //         data:'cost_nama'
-        //       },
-        //       {
-        //         data:'nominal'
-        //       },
-        //       {
-        //         data:'tanggal'
-        //       }
-        //     ]
-        //   });
-        //     console.log(res.data.data)
-        // })
-        // if(filterdata == "idrequester")
-        // {
-        // }
-        // else if(filterdata == 'namarequester')
-        // {
-        //     axios.post("",{'id':cari}).then(function(res){
-
-        //     })
-        // }
-        // else if(filterdata == 'costnama')
-        // {
-        //     axios.post("",{'id':cari}).then(function(res){
-
-        //     })
-        // }
+        $('#isi').load("{{ route('table_cost') }}/" + id_cabang + "/" + filterdata + "/" + caridata + "/" + ket_waktu + "/"+  filtertahun +"/" + filterbulan + "/" +filter_tahun + "/" +waktuawal + "/" +waktuakhir)
     }
 
-    // function load_range(waktu_awal,waktu_akhir){
-    //     tables = $('#tabel').DataTable({
-    //     processing : true,
-    //     ordering:false,
-    //     serverSide : true,
-    //     ajax:{
-    //         url: "{{ url('/api/cost_report/range_datatable/') }}/"+waktu_awal+'/'+waktu_akhir,
-    //     },
-    //         columns:[
-    //                 {
-    //                     data: 'inv_cost'
-    //                 },
-    //                 {
-    //                     data: 'id_sales'
-    //                 },
-    //                 {
-    //                     data: 'nama_sales'
-    //                 },
-    //                 {
-    //                     data: 'cost_nama'
-    //                 },
-    //                 {
-    //                     data: 'nominal'
-    //                 },
-    //                 {
-    //                     data: 'tanggal'
-    //                 }
-    //         ]
-    //     });
-    // }
 
-    // function range_report(){
-    //     waktu_awal = $('#waktu_awal').val();
-    //     if(waktu_awal == ""){
-    //     return false;
-    //     }
-    //     waktu_akhir = $('#waktu_akhir').val();
-    //     if(waktu_akhir == ""){
-    //     return false;
-    //     }
-    //     if ( $.fn.DataTable.isDataTable('#tabel') ) {
-    //             $('#tabel').DataTable().destroy();
-    //         }
-    //     load_range(waktu_awal,waktu_akhir)
-    // }
 
     function print_report()
     {
+        id_cabang = {{session()->get('cabang')}}
         var filterdata = $('#pilihanfilter').val()
         if(filterdata == null)
         {
@@ -348,39 +197,7 @@
         }
         var ket_waktu = $('#ket_waktu').val();
 
-        window.open("{{ url('/cost_report/generate_cost') }}/" + filterdata + "/" + caridata + "/" + ket_waktu + "/"+  filtertahun +"/" + filterbulan + "/" +filter_tahun + "/" +waktuawal + "/" +waktuakhir);
+        window.open("{{ url('/cost_report/generate_cost') }}/" + id_cabang + "/" + filterdata + "/" + caridata + "/" + ket_waktu + "/"+  filtertahun +"/" + filterbulan + "/" +filter_tahun + "/" +waktuawal + "/" +waktuakhir);
     }
-
-    // function print_report(){
-    //     ket_waktu = $('#ket_waktu').val();
-    //     if(ket_waktu == 0){
-    //     window.open(`{{url('/cost_report/report_cost')}}`);
-    //     }else if(ket_waktu == 1){
-    //     window.open(`{{url('/cost_report/report_cost_today')}}`);
-    //     }else if(ket_waktu == 2){
-    //     // window.open(`{{url('/cost/report_cost_today')}}`);
-    //     }else if(ket_waktu == 3){
-    //     month = $('#month').val();
-    //     year = $('#year').val();
-    //     window.open(`{{url('/cost_report/report_cost_month/')}}/`+month+'/'+year);
-    //     }
-    //     else if(ket_waktu == 4){
-
-    //     year = $('#year_filter').val();
-    //     window.open(`{{url('/cost_report/report_cost_year/')}}/`+year);
-    //     }
-    //     else if(ket_waktu == 5){
-
-    //         waktu_awal = $('#waktu_awal').val();
-    //         if(waktu_awal == ""){
-    //         return false;
-    //         }
-    //         waktu_akhir = $('#waktu_akhir').val();
-    //         if(waktu_akhir == ""){
-    //         return false;
-    //         }
-    //     window.open(`{{url('/cost_report/report_cost_range/')}}/`+waktu_awal+'/'+waktu_akhir);
-    //     }
-    // }
 </script>
 @endsection

@@ -52,9 +52,7 @@
         }).then(function(res){
             var datas = res.data
             $('#listcredit').html(datas)
-        }).cath(function(err){
-            console.log(err)
         })
     }
 </script>
-@endsection
+@endsection 

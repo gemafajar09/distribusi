@@ -17,7 +17,7 @@ class TransaksiPurchaseReturnController extends Controller
             'id_transaksi_purchase_return'=>'numeric',
             'return_id'=>'',
             'return_date'=>'date',
-            'id_suplier'=>'numeric',
+            'id_suplier'=>'',
             'note_return'=>'numeric',
             'jumlah_return'=>'numeric',
             'price'=>'numeric',
@@ -43,7 +43,7 @@ class TransaksiPurchaseReturnController extends Controller
         foreach ($data as $d) {
             $id = $d->produk_id;
             $jumlah = $d->jumlah;
-            $harga = $d->capital_price;
+            $harga = $d->produk_harga;
             $stok_id = $d->stok_id;
             $proses = DB::table('tbl_unit')->where('produk_id',$id)
             ->join('tbl_satuan','tbl_unit.maximum_unit_name','=','tbl_satuan.id_satuan')
@@ -109,7 +109,8 @@ class TransaksiPurchaseReturnController extends Controller
     public function join_builder($id){
         $data = DB::table('tbl_stok as tmp')
             ->where('stok_id',$id)
-            ->select('jumlah','produk_id','capital_price','stok_id')
+            ->join('tbl_produk as prdk','prdk.produk_id','=','tmp.produk_id')
+            ->select('jumlah','prdk.produk_id as produk_id','capital_price','stok_id','produk_harga')
             ->get();
             return $data;
     }
@@ -128,7 +129,7 @@ class TransaksiPurchaseReturnController extends Controller
                 ->join('tbl_stok as s','s.stok_id','=','t.stok_id')
                 ->join('tbl_produk as p','p.produk_id','=','s.produk_id')
                 ->join('tbl_suplier as sp','sp.id_suplier','=','t.id_suplier')
-                ->select('id_transaksi_purchase_return','jumlah_return','produk_nama','capital_price','nama_suplier','note_return','s.produk_id as produk_id','return_date','return_id','s.stok_id as stok_id')
+                ->select('id_transaksi_purchase_return','jumlah_return','produk_nama','capital_price','nama_suplier','note_return','s.produk_id as produk_id','return_date','return_id','s.stok_id as stok_id','produk_harga')
                 ->get();
             return $data;
     }
@@ -142,7 +143,7 @@ class TransaksiPurchaseReturnController extends Controller
         foreach ($data as $d) {
             $id = $d->produk_id;
             $jumlah = $d->jumlah_return;
-            $harga = $d->capital_price;
+            $harga = $d->produk_harga;
             $proses = DB::table('tbl_unit')->where('produk_id',$id)
             ->join('tbl_satuan','tbl_unit.maximum_unit_name','=','tbl_satuan.id_satuan')
             ->select('id_unit','nama_satuan as unit','default_value')
@@ -231,6 +232,7 @@ class TransaksiPurchaseReturnController extends Controller
     public function register($id_cabang){
         $data1 = $this->datatable($id_cabang);
         $datatmp =  $this->datatable;
+        $data_cabang = DB::table('tbl_cabang')->where('id_cabang',$id_cabang)->first();
         $calculate = DB::table('transaksi_purchase_return')->where('id_cabang',$id_cabang)->where('register','0')->sum('price');
         $update = DB::table('transaksi_purchase_return')->where('id_cabang',$id_cabang)->update(array('register' => '1'));
         foreach ($datatmp as $d) {
@@ -240,7 +242,7 @@ class TransaksiPurchaseReturnController extends Controller
             $data->decrement('jumlah',$jumlah);
             $data->save();
         }
-        return view('report.purchase_transaksi_return',compact(['datatmp','calculate']));
+        return view('report.purchase_transaksi_return',compact(['datatmp','calculate','data_cabang']));
     }
 
     public function remove(Request $request, $id){

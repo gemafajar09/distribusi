@@ -1,167 +1,197 @@
+{{--  --}}
+<?php $nmsales = DB::table('tbl_sales')->where('id_sales',$sales['id_sales'])->first(); 
+    if($nmsales != NULL)
+    { 
+        $salesnama = $nmsales->nama_sales;
+    }
+    else
+    {
+        $salesnama = '-';
+    }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link href="{{asset('/assets/vendors/bootstrap/dist/css/bootstrap.min.css')}}" rel="stylesheet">
-    <style type="text/css" media="print">
-        @page { size: landscape; }
-    </style>
 </head>
 <body>
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-8">
-        <div class="text-left">
-            <h5>SUMBER CAHAYA REZEKI</h5>
-            <h6>Jl. BY PASS TALUAK</h6>
-            <h6>BUKITTINGGI, INDONESIA</h6>
-            <H6>PHONE : 085375715757 FAX : (0752) 8810863</H6>
-            <br>
-            <p>Sales : {{$sales['nama_sales']}}</p>
-        </div>
-        </div>
-        
-        <div class="col-sm-4">
-        <div class="text-center">   
-            <h5><b>TRANSAKSI SALES<b></h5>
-            <hr style="border-top:5px solid black; width:300px;">
-            <h6>Invoice ID : {{$inv}}</h6>
-            <div class="row mb-2">
-                <div class="col-sm-5 offset-1">
-                    <table border="2" style="width: 140px;">
-                        <tr>
-                            <td>Invoice Date</td>
-                        </tr>
-                        <tr>
-                            <td>{{date('Y-m-d')}}</td>
-                        </tr>
-                    </table>
-                </div>
-                <div class="col-sm-6" >
-                    <table border="2"style="width: 140px;">
-                        <tr>
-                            <td>Invoice Type</td>
-                        </tr>
-                        <tr>
-                            <td>Cash</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-5 offset-1">
-                    <table border="2" style="width: 140px;">
-                        <tr>
-                            <td>P.I.C</td>
-                        </tr>
-                        <tr>
-                            <td>ADMIN1</td>
-                        </tr>
-                    </table>
-                </div>
-                <div class="col-sm-6">
-                    <table border="2" style="width: 140px;">
-                        <tr>
-                            <td>TERM</td>
-                        </tr>
-                        <tr>
-                            <td>{{$sales['invoice_date']}}</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
+	<font face="Calibri">
+		<head>
+		</head>
+		<body onLoad="javascript:print()">
+        <!-- header faktur -->
+			<table width="100%" style="font-size:9px">
+				<tr>
+					<td style="width: 20%;">
+						<b style="font-size:12px">{{$data_cabang->nama_cabang}}</b>
+					</td>
+					<td style="width:56%">&nbsp;</td>
+
+					<td colspan="3" style="width:9%; font-size:12px">
+						<b>TRANSAKSI SALES<b>
+                            <hr>
+                        {{-- <hr style="border-top:2px solid black;"> --}}
+					</td>
+				</tr>
+
+				<tr>
+					<td>
+						<b>{{$data_cabang->alamat}}</b>
+					</td>
+					<td>&nbsp;</td>
+                    <td style="width:10%; font-size:12px">
+						<b>INVOICE ID</b>
+					</td>
+					<td style="width:1%">
+						:
+					</td>
+					<td style="width:15%">
+						<b>{{$inv}}</b>
+					</td>
+				</tr>
+
+				<tr>
+					<td>
+						PHONE : {{$data_cabang->telepon}}
+					</td>
+					<td>&nbsp;</td>
+
+					<td colspan="3" rowspan="3">
+						<table style="border-collapse: collapse; border: 1px solid black;" id="tab">
+                            <tr style="border: 1px solid black;">
+                                <th style="border: 1px solid black; width:80px">INVOICE DATE</th>
+                                <th style="border: 1px solid black; width:80px">INVOICE TYPE</th>
+                            </tr>
+                            <tr style="border: 1px solid black;">
+                                <td style="border: 1px solid black; width:80px; text-align:center"><?= date('d-m-Y') ?></td>
+                                <td style="border: 1px solid black; width:80px; text-align:center">{{$sales['transaksi_tipe']}}</td>
+                            </tr>
+                            <tr style="border: 1px solid black;">
+                                <th style="border: 1px solid black; width:80px">P.I.C</th>
+                                <th style="border: 1px solid black; width:80px">TERM</th>
+                            </tr>
+                            <tr style="border: 1px solid black;">
+                                <td style="border: 1px solid black; width:80px; text-align:center">Admin1</td>
+                                <td style="border: 1px solid black; width:80px; text-align:center">{{$sales['invoice_date']}}</td>
+                            </tr>
+                        </table>
+					</td>
+				</tr>
+
+                <tr>
+					<td>
+						EMAIL : {{$data_cabang->email}}
+					</td>
+					<td>&nbsp;</td>
+				</tr>
+
+                <tr>
+					<td>
+						Sales : <?= $salesnama ?>
+					</td>
+					<td>&nbsp;</td>
+				</tr>
+			</table>
             
-        </div>
-        </div>
-        </div>
-        <br>
-    <table border="2"  style="border: 2px solid black; text-align:center; width:100%;">
-    <thead>
-        <tr>
-            <td>Item Description</td>
-            <td>Quantity</td>
-            <td>Price</td>
-            <td>Total</td>
-            <td>Diskon</td>
-            <td>Amount</td>
-        </tr>
-    </thead>
-    <tbody>
-        <?php $tot = 0; ?>
-        @foreach($init as $d)
-        <?php $tot += $d['amount'] ?>
-        <tr>
-            <td>{{$d['produk_nama']}}</td>
-            <td>{{$d['quantity']}}</td>
-            <td>{{$d['produk_harga']}}</td>
-            <td>{{$d['total']}}</td>
-            <td>{{$d['diskon']}}</td>
-            <td>{{number_format($d['amount'])}}</td>
-        </tr>
-        @endforeach
-    </tbody>
-    </table>
-    <br>
-    <div class="row">
-        <div class="col-sm-7">
-            <p>Note : {{$sales['note']}}</p>
-            <hr style="border-top: 5px solid black;">
-            <div class="row mb-5">
-                <div class="col-sm-8">
-                    <p class="ml-4">Prepared By</p>
-                </div>
-                <div class="col-sm-4">
-                    <p class="ml-3">Approved By</p>
-                </div>
-            </div>
-            <div class="row">
-            <div class="col-sm-8">
-                    <p>............................</p>
-                    <p>Date : {{date('d-m-Y')}}</p>
-                </div>
-                <div class="col-sm-4">
-                <p>............................</p>
-                    <p>Date : </p>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-5 mt-5">
-            <table  border="2" style="width: 100%;">
-                <tr>
-                    <td style="border-bottom: none;">Total Purchase :</td>
-                    <td>{{number_format($tot)}}</td>
+			<table style="font-size:9px; width:100%; border-collapse:collapse; border:1px solid black;">
+				<tr style="border:1px solid grey">
+					<th style="width:30%; text-align:left; height:1px; border: 1px solid black;">ITEM DESCRIPTION </th>
+					<th style="width:22%; text-align:left; height:1px; border: 1px solid black;">QUANTITY </th>
+					<th style="width:12%; text-align:left; height:1px; border: 1px solid black;">PRICE</th>
+					<th style="width:12%; text-align:left; height:1px; border: 1px solid black;">TOTAL</th>
+					<th style="width:12%; text-align:left; height:1px; border: 1px solid black;">DISKON</th>
+					<th style="width:12%; text-align:right; height:1px; border: 1px solid black;">AMOUNT</th>
+				</tr>
+                <?php $tot = 0; ?>
+                @foreach($init as $d)
+                <?php $tot += $d['amount'] ?>
+				<tr>
+					<td style="border:1px; height:1px; border: 1px solid black;">{{$d['produk_nama']}}</td>
+					<td style="border:1px; height:1px; border: 1px solid black;">{{$d['quantity']}}</td>
+					<td style="border:1px; height:1px; border: 1px solid black;">Rp.{{$d['produk_harga']}}</td>
+					<td style="border:1px; height:1px; border: 1px solid black;">Rp.{{$d['total']}}</td>
+					<td style="border:1px; height:1px; border: 1px solid black;">Rp.{{$d['diskon']}}</td>
+					<td style="border:1px; height:1px; border: 1px solid black; text-align:right">Rp.{{number_format($d['amount'])}}</td>
+				</tr>
+                @endforeach
+                <tr style="border:0 solid white">
+                    <td colspan="3"></td>
+                    <td colspan="2" style="text-align: left;">
+                        <b>TOTAL PURCHASE&nbsp;&nbsp;</b>
+                    </td>
+                    <td style="text-align: right;">
+                        Rp.{{number_format($tot)}}
+                    </td>
                 </tr>
+
                 <tr>
-                    <td>Final Discount :</td>
-                    <td>{{number_format($sales['diskon'])}}</td>
+                    <td colspan="3"></td>
+                    <td colspan="2" style="text-align: left;">
+                        <b>FINAL DISCOUNT&nbsp;&nbsp;</b>
+                    </td>
+                    <td style="height:1px; text-align: right;">
+                        Rp.{{number_format($sales['diskon'])}}
+                    </td>
                 </tr>
+
                 <tr>
-                    <td>Total After Discount :</td>
-                    <td>{{number_format($tot - $sales['diskon'])}}</td>
+                    <td colspan="3"></td>
+                    <td colspan="2" style="text-align: left;">
+                        <b>TOTAL AFTER DISCOUNT&nbsp;&nbsp;</b>
+                    </td>
+                    <td style="height:1px; text-align: right;">
+                        Rp.{{number_format($tot - $sales['diskon'])}}
+                    </td>
                 </tr>
+
                 <tr>
-                    <td>Down Payment :</td>
-                    <td>{{number_format($sales['dp'])}}</td>
+                    <td colspan="3"></td>
+                    <td colspan="2" style="text-align: left;">
+                        <b>DOWN PAYMENT&nbsp;&nbsp;</b>
+                    </td>
+                    <td style="height:1px; text-align: right;">
+                        Rp.{{number_format($sales['dp'])}}
+                    </td>
                 </tr>
+
                 <tr>
-                    <td>Total Debt Balance :</td>
-                    <td>{{number_format(($tot - $sales['diskon']) - $sales['dp'])}}</td>
+                    <td colspan="3"></td>
+                    <td colspan="2" style="text-align: left;">
+                        <b>TOTAL DEBT BALANCE&nbsp;&nbsp;</b>
+                    </td>
+                    <td style="height:1px; text-align: right;">
+                        Rp.{{number_format(($tot - $sales['diskon']) - $sales['dp'] )}}
+                    </td>
                 </tr>
             </table>
-        </div>
-    </div>
-</div>
 
-    
-<!-- script -->
-<script src="{{asset('/assets/vendors/jquery/dist/jquery.min.js')}}"></script>
-<script src="{{asset('/assets/vendors/bootstrap/dist/js/bootstrap.bundle.min.js')}}"></script>
-<script>
-        $( document ).ready(function() {
-            window.print()
-    });
-    </script>
-</body>
-</html>
+			<table width="100%" style="font-size:9px">
+				<tr>
+					<td style="width:10%"><i style="font-size:9px; height:1px">Note :&nbsp;&nbsp;</i></td>
+					<td style="width:90%"><i style="font-size:9px; height:1px"> Ok</i></td>
+				</tr>
+			</table>
+            <hr style="border-top:2px solid black;">
+			<table width="100%" style="font-size:9px; text-align:center">
+				<tr>
+					<td style="font-size:12px; height:1px">PENYEDIA</td>
+					<td style="font-size:12px; height:1px">SOPIR</td>
+					<td style="font-size:12px; height:1px">PENERIMA</td>
+					<td style="font-size:12px; height:1px">GUDANG PENYEDIA</td>
+				</tr>
+				<tr>
+					<td colspan="4">&nbsp;</td>
+				</tr>
+				<tr>
+					<td colspan="4">&nbsp;</td>
+				</tr>
+				<tr>
+					<td>_ _ _ _ _ _ _ _ _ _ _</td>
+					<td>_ _ _ _ _ _ _ _ _ _ _</td>
+					<td>_ _ _ _ _ _ _ _ _ _ _</td>
+					<td>_ _ _ _ _ _ _ _ _ _ _</td>
+				</tr>
+			</table>
+		</body>

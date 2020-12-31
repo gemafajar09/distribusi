@@ -21,14 +21,14 @@ class TransaksiPurchaseDetailController extends Controller
             'invoice_date'=>'date',
             'transaksi_tipe'=>'numeric',
             'term_until'=>'date',
-            'id_suplier'=>'numeric',
-            'produk_id'=>'numeric',
+            'id_suplier'=>'',
+            'produk_id'=>'',
             'quantity'=>'numeric',
             'unit_satuan_price'=>'numeric',
             'diskon'=>'numeric',
             'total_price'=>'numeric',
             'id_cabang'=>'numeric',
-            'id_gudang'=>'numeric'
+            'id_gudang'=>''
         );
         $this->dataisi = [];
         $this->datatable = [];

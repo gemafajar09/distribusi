@@ -12,7 +12,7 @@
                 <form action="" method="POST">
                     @csrf
                     <div class="form-row">
-                        <div class="form-group col-sm-2">
+                        <div class="form-group col-sm-3">
                             <label for="">Invoice ID</label>
                             <input type="text" class="form-control" id="invoice_id" readonly>
                         </div>
@@ -20,15 +20,8 @@
                             <label for="">Invoice Date</label>
                             <input type="date" id="invoice_date" class="form-control">
                         </div>
-                        <div class="form-group col-sm-2">
-                        <label for="">Gudang</label>
-                        <select name="id_gudang" id="id_gudang" class="form-control rounded" disabled="true">
-                            @foreach ($gudang as $c)
-                            <option value="{{$c->id_gudang}}">{{$c->nama_gudang}}</option>
-                            @endforeach
-                        </select>
-                        </div>
-                        <div class="form-group col-sm-2">
+                        
+                        <div class="form-group col-sm-3">
                             <label for="">Transaction Type</label><br>
                             <div style="margin-top:10px;">
                             <input type="radio" name="transaksi_tipe" id="cash" value="0">
@@ -45,15 +38,15 @@
                     <div class="form-row">
                     <div class="form-group col-sm-3">
                     <label for="">Suplier</label>
-                        <select name="id_suplier" id="id_suplier" class="selectpicker form-control" data-live-search="true" title="Pilih Suplier" autocomplete="off">
+                        <select name="id_suplier" id="id_suplier" class="selectpicker form-control" data-live-search="true" title="Pilih Suplier" autocomplete="off" data-size="5">
                         </select>
                     </div>
                     <div class="form-group col-sm-3">
                         <label for="">Nama Produk</label>
-                        <select name="produk_id" id="produk_id" class="selectpicker form-control" data-live-search="true" title="Pilih Produk" autocomplete="off">
+                        <select name="produk_id" id="produk_id" class="selectpicker form-control" data-live-search="true" title="Pilih Produk" autocomplete="off" data-size="5">
                         </select>
                     </div>
-                    <div class="form-group col-sm-3">
+                    <div class="form-group col-sm-3" style="display: none;">
                             <label for="">Unit Price</label>
                                         <div class="input-group">
                                         <div class="input-group-prepend">
@@ -72,6 +65,14 @@
                                                 <div class="input-group-text">%</div>
                                             </div>
                                         </div>
+                        </div>
+                        <div class="form-group col-sm-3">
+                        <label for="">Gudang</label>
+                        <select name="id_gudang" id="id_gudang" class="form-control rounded" disabled="true">
+                            @foreach ($gudang as $c)
+                            <option value="{{$c->id_gudang}}">{{$c->nama_gudang}}</option>
+                            @endforeach
+                        </select>
                         </div>
                     </div>
                     <div class="form-row" id="wadah">
@@ -99,7 +100,7 @@
                     <th >Type Produk</th>
                     <th >Brand</th>
                     <th >Nama Produk</th>
-                    <th >Harga</th>
+                    
                     <th>Quantity</th>
                     <th>Total</th>
                     <th>Diskon</th>
@@ -183,24 +184,23 @@
             defaultContent:""
           },
           {
-            data:'unit_satuan_price',
-            defaultContent:""
-          },
-          {
             data:'stok_quantity',
             defaultContent:""
           },
           {
             data:'total',
-            defaultContent:""
+            defaultContent:"",
+            render: $.fn.dataTable.render.number( ',', '.', 2 )
           },
           {
             data:'diskon',
-            defaultContent:""
+            defaultContent:"",
+            render: $.fn.dataTable.render.number( ',', '.', 2 )
           },
           {
             data:'total_price',
-            defaultContent:""
+            defaultContent:"",
+            render: $.fn.dataTable.render.number( ',', '.', 2 )
           },
           {
             defaultContent:"",
@@ -240,6 +240,12 @@
             $('#produk_id').on('change', function (e) {
                 var optionSelected = $("option:selected", this); 
                 let id = this.value;
+                axios.get('{{url('/api/produk/')}}/'+id)
+                    .then(function(res){
+                        isi = res.data
+                        harga_modal = isi.data.harga_modal
+                        $('#unit_satuan_price').val(harga_modal)
+                    });
                 axios.get('{{url('/api/getunit/')}}/'+id)
                     .then(function(res){
                         isi = res.data
@@ -268,7 +274,7 @@
                 $('#term_until').hide();
                 session_cabang = {{session()->get('cabang')}};
                 generateinv(session_cabang);
-                axios.get('{{url('/api/calculatetmp/')}}/')
+                axios.get('{{url('/api/calculatetmp/')}}/'+session_cabang)
                     .then(function(res){
                         isi = res.data
                         $('#sub_tot_purchase').val(isi.tot)
@@ -365,7 +371,7 @@
                                 $('#wadah').html('')
                                 tables.ajax.reload()
                                 toastr.info(data.message)
-                                axios.get('{{url('/api/calculatetmp/')}}/')
+                                axios.get('{{url('/api/calculatetmp/')}}/'+id_cabang)
                                 .then(function(res){
                                     isi = res.data
                                     $('#sub_tot_purchase').val(isi.tot)
@@ -405,7 +411,7 @@
         let dis = $('#final_discount').val();
         let down = $('#down_payment').val();
         let deb = $('#tot_debt_balance').val();
-        cek = window.open('{{url('/api/registerpurchase/')}}/'+tot+'/'+dis+'/'+down+'/'+deb+'/'+id_cabang+'/', "_blank");
+        cek = window.open('{{url('/api/registerpurchase')}}/'+tot+'/'+dis+'/'+down+'/'+deb+'/'+id_cabang, "_blank");
         $(cek).on("unload", function(){
         tables.ajax.reload();
         session_cabang = {{session()->get('cabang')}}
@@ -428,6 +434,13 @@
             var data = res.data
             tables.ajax.reload()
             toastr.info(data.message)
+            axios.get('{{url('/api/calculatetmp/')}}/'+id_cabang)
+                                .then(function(res){
+                                    isi = res.data
+                                    $('#sub_tot_purchase').val(isi.tot)
+                                    $('#tot_after_discount').val(isi.tot)
+                                    $('#tot_debt_balance').val(isi.tot)
+                                });
         })
     }
 
