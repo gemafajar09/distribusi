@@ -2,7 +2,7 @@
 
 <!-- main content -->
 <!-- page Title -->
-@section('page-title','Ini Halaman Stok')
+@section('page-title','Halaman Stok')
 <!-- Page Content -->
 @section('content')
 <div class="mt-2">
@@ -10,13 +10,18 @@
         <div class="row">
             <div class="col-sm-3">
                <div class="form-group">
-                   <label for="">Warehouse</label>
+                   
                    <select name="id_gudang" id="id_gudang" class="form-control rounded" title="Pilih Gudang">
                             @foreach ($gudang as $c)
                             <option value="{{$c->id_gudang}}">{{$c->nama_gudang}}</option>
                             @endforeach
                     </select>
                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                <button class="btn btn-warning" onclick="cleaning()">Stok Cleaning</button>
+                </div>
             </div>
         </div>
     </div>
@@ -29,7 +34,6 @@
                 <tr>
                     <th >Nama Produk</th>
                     <th >Jumlah Quantity</th>
-                    <th >Capital Price</th>
                     <th>Stok In Price</th> 
                 </tr>
             </thead>
@@ -131,9 +135,6 @@
           },
           {
             data:'jumlah'
-          },
-          {
-            data:'capital_price'
           },
           {
             data:'stok_harga'
@@ -280,6 +281,19 @@
         document.getElementById("default_value").value=null;
         document.getElementById("note").value=null;
         
+    }
+    
+    function cleaning(){
+        var txt;
+        var r = confirm("Cleaning Stok Akan Dilakukan ?");
+        if (r == true) {
+            axios.get('{{url('/api/stokcleaning')}}/'+id_cabang)
+            .then(function(res){
+                location.reload();
+            })
+        } else {
+            txt = "You pressed Cancel!";
+        }
     }
 </script>
 @endsection

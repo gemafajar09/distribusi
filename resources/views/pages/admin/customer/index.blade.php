@@ -2,7 +2,7 @@
 
 <!-- main content -->
 <!-- page Title -->
-@section('page-title','Ini Halaman Customer')
+@section('page-title','Halaman Customer')
 <!-- Page Content -->
 @section('content')
 <div class="mt-2">
@@ -12,15 +12,15 @@
                 <form action="" method="POST">
                     @csrf
                     <div class="form-row">
-                    <div class="form-group col-md-5">
+                    <div class="form-group col-md-4">
                         <label for="">Nama Customer</label>
                         <input type="text" name="nama_customer" id="nama_customer" class="form-control rounded" placeholder="Masukan Nama Customer">
                     </div>
-                    <div class="form-group col-md-5">
+                    <div class="form-group col-md-4">
                         <label for="">Nama Perusahaan</label>
                         <input type="text" name="nama_perusahaan" id="nama_perusahaan" class="form-control rounded" placeholder="Masukan Nama Perusahaan">
                     </div>
-                    <div class="form-group col-md-2">
+                    <div class="form-group col-md-4">
                         <label for="">Credit Plafond</label>
                         <input type="number" name="credit_plafond" id="credit_plafond" class="form-control rounded" placeholder="Masukan Credit Plafond">
                     </div>
@@ -32,7 +32,7 @@
                     </div>
                     <div class="form-group col-md-4">
                         <label for="">Kota</label>
-                        <input type="text" name="kota" id="kota" class="form-control rounded" placeholder="Masukan Alamat">
+                        <input type="text" name="kota" id="kota" class="form-control rounded" placeholder="Masukan Kota">
                     </div>
                     <div class="form-group col-md-4">
                         <label for="">Negara</label>

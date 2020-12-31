@@ -26,12 +26,12 @@
                             <div class="form-row">
                                 <div class="form-group col-sm-4">
                                      <label for="">Pilih Suplier</label>
-                                    <select name="id_suplier" id="id_suplier" class="selectpicker form-control" data-live-search="true" title="Pilih Suplier" autocomplete="off">
+                                    <select name="id_suplier" id="id_suplier" class="selectpicker form-control" data-live-search="true" title="Pilih Suplier" autocomplete="off" data-size="5">
                                     </select>
                                 </div>
                                 <div class="form-group col-sm-4">
                                 <label for="">Stock To Return</label>
-                                    <select name="stok_id" id="stok_id" class="selectpicker form-control" data-live-search="true" title="Pilih Produk" autocomplete="off">
+                                    <select name="stok_id" id="stok_id" class="selectpicker form-control" data-live-search="true" title="Pilih Produk" autocomplete="off" data-size="5">
                                     </select>
                                 </div>
                                 <div class="form-group col-sm-4">
@@ -137,7 +137,8 @@
           },
           {
             data:'price',
-            defaultContent:""
+            defaultContent:"",
+            render: $.fn.dataTable.render.number( ',', '.', 2 )
           },
           {
             data:'note_return',
@@ -174,7 +175,7 @@
                 .then(function(res){
                     isi = res.data
                     $.each(isi.data, function (i, item) {
-                        $('#stok_id').append("<option value="+item.stok_id+">"+item.produk_nama+' '+'Rp. '+item.capital_price+"</option>");
+                        $('#stok_id').append("<option value="+item.stok_id+">"+item.produk_nama+' '+'Rp. '+item.produk_harga+"</option>");
                     });
                     $('.selectpicker').selectpicker('refresh');
                     })
@@ -316,7 +317,7 @@
     $("#register").on('click', function(e) {
         id_cabang = {{session()->get('cabang')}}
         e.preventDefault();
-        cek = window.open('{{url('/api/registerpurchasereturn/')}}/'+id_cabang+'/', "_blank");
+        cek = window.open('{{url('/api/registerpurchasereturn')}}/'+id_cabang, "_blank");
         $(cek).on("unload", function(){
         tables.ajax.reload();
         session_cabang = {{session()->get('cabang')}};

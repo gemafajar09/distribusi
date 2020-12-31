@@ -95,13 +95,16 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="">Stok To Return</label>
-                                        <select name="stockId" id="stockId" class="select2" style="width:100%">
-                                            <option value="">STOCK ID</option>
-                                            @foreach($stockid as $a)
-                                                <option value="{{$a->produk_id}}">{{$a->produk_id}} | {{$a->produk_nama}}</option>
-                                            @endforeach
-                                        </select>
+                                        <button style="margin-top:28px" type="button"
+                                            class="btn btn-success btn-sm" onclick="stokcari('{{Session()->get('cabang')}}')">Stok To Return</button>
+                                        <input type="hidden" id="stok_id">
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="">Product ID</label>
+                                        <input type="text" style="border-radius:3px" id="produkid" name="produkid"
+                                            readonly class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-md-12">
@@ -149,7 +152,7 @@
                                                 <div class="input-group-prepend">
                                                     <div style="font-size: 10px;" class="input-group-text">Discount</div>
                                                 </div>
-                                                <input type="text" class="form-control" value="0" id="diskon">
+                                                <input type="text" class="form-control" value="0" onkeyup="diskont(this)" id="diskon">
                                             </div>
                                         </div>
                                         <div class="col-md-12">
@@ -225,7 +228,9 @@
                                     </div>
                                 </div>
                                 <br>
-                                <input type="checkbox" id="print">&nbsp;<i>Print Invoice</i>
+                                <!--<div id="printt" style="display:none">-->
+                                <!--    <input type="checkbox" id="print">&nbsp;<i>Print Invoice</i>-->
+                                <!--</div>-->
                                 <br>
                                 <button type="button" onclick="register()" class="btn btn-outline-success">Register
                                     Transaction </button>
@@ -300,6 +305,26 @@
   </div>
 </div>
 
+<div class="modal" tabindex="-1" id="tmpmodal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Stok Inventory</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12" id="datastoktampil">
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 <script>
     $(document).ready(function(){
         
@@ -307,69 +332,123 @@
         
     })
 
+    // $('#compensation').change(function(){
+    //     var isi = $('#compensation').val()
+    //     if(isi == 'TERM UNTIL')
+    //     {
+    //         $('#printt').hide()
+    //         document.getElementById('print').checked = false
+    //     }else if(isi == 'CASH'){
+    //         $('#printt').show()
+    //         document.getElementById('print').checked = true
+    //     }
+    // })
+
+    function stokcari(cabang)
+    {
+        axios.get("{{url('/api/tampilstok')}}/"+cabang).then(function(res){
+            var data = res.data
+            $('#tmpmodal').modal()
+            $('#datastoktampil').html(data)
+        })
+    }
+
+    function diskont(nilai)
+    {
+        var disc = nilai.value
+        var amn = convertToAngka($('#prices').val())
+        var hasil = amn - disc
+        $('#finalselling').val(convertToRupiah(hasil))
+    }
+
+    function register()
+    {
+        var invoiceid = $('#invoiceid').val()   
+        var invoicedate = $('#invoiceDate').val()   
+        var compensation = $('#compensation').val()   
+        var term_util = $('#term_util').val()   
+        var idsalesinv = $('#idsalesinv').val()  
+        var diskon = $('#diskon').val() 
+        var totalsales = convertToAngka($('#totalsales').val())   
+        var id_user = "{{Session()->get('id')}}"
+        axios.post("{{url('/api/rekaptransaksir')}}",{
+            'invoiceid':invoiceid,
+            'invoicedate':invoicedate,
+            'compensation':compensation,
+            'term_util':term_util,
+            'idsalesinv':idsalesinv,
+            'totalsales':totalsales,
+            'diskon':diskon,
+            'id_user':id_user
+        }).then(function(res){
+            var data = res.data
+            if(data.status == 200){
+                // var check = document.getElementById('print').checked;
+                // if(check == true)
+                // {
+                //     // window.open("{{url('/sales_transaksi/fakturs')}}/"+data.invoice_id+"/"+salestype, '_blank');
+                //     window.location.reload()
+                // }else{
+                //     window.location.reload()
+                // }
+                window.location.reload()
+            }
+            
+        })
+    }
+
     function add()
     {
         
         var id_user = "{{Session()->get('id')}}"
         var invoiceid = $('#invoiceid').val()
-        var stockId = $('#stockId').val()
+        var stockId = $('#stok_id').val()
         var note = $('#note').val()
         var prices = convertToAngka($('#finalselling').val())
-        var arrays = []
         var count = $('#totals').val()
-        for(var i = 0; i < count; i++)
-        {
-            var no = i+1
-            arrays.push(parseInt($('#pecah'+no).val()))
-        }
-        var tertinggi = Math.max.apply(Math, arrays)
-        var hargasatuan = prices /tertinggi
         // cek diskon kosong atau tidak
         var discount = $('#diskon').val()
-        // hitung jumlah
-        
-        if(count == 1)
-        {
-            var jumlah1 = $('#jumlah1').val()
-            var uni1 = $('#pecah1').val()
-            var total = parseInt(jumlah1 * uni1)
-        }
-        else if(count == 2)
-        {
-            if($('#jumlah1').val() == '0')
-            {
-                var jumlah1 = '0'
-                var uni1 = '0'
-            }else{
-                var jumlah1 = $('#jumlah1').val()
-                var uni1 = $('#pecah1').val()
+       // cek amount
+       var amou = $('#amount').val()
+            if (amou == '') {
+                var amount = 0
+            } else {
+                var amount = amou
             }
-            var jumlah2 = $('#jumlah2').val()
-            var uni2 = $('#pecah2').val()
-            var total = parseInt(jumlah1 * uni1) + parseInt(jumlah2 * uni2)
-        }
-        else if(count == 3)
-        {
-            if($('#jumlah1').val() == '0')
-            {
+            // hitung jumlah
+            if ($('#jumlah1').val() == '0') {
                 var jumlah1 = '0'
-                var uni1 = '0'
-            }else{
+            } else {
                 var jumlah1 = $('#jumlah1').val()
-                var uni1 = $('#pecah1').val()
             }
-            if($('#jumlah2').val() == '0')
-            {
+            if ($('#jumlah2').val() == '0') {
                 var jumlah2 = '0'
-                var uni2 = '0'
-            }else{
+            } else {
                 var jumlah2 = $('#jumlah2').val()
-                var uni2 = $('#pecah2').val()
             }
-            var jumlah3 = $('#jumlah3').val()
-            var uni3 = $('#pecah3').val()
-            var total = parseInt(jumlah1 * uni1) + parseInt(jumlah2 * uni2) + parseInt(jumlah3 * uni3)
-        }
+            if ($('#jumlah3').val() == '0') {
+                var jumlah3 = '0'
+            }else{
+                var jumlah3 = $('#jumlah3').val()
+            }
+            // cari nilai unit
+
+            if(count == 1){
+                var uni1 = parseInt($('#pecah1').val())
+                var hargasatuan = prices / uni1
+                var total = parseInt(jumlah1 * uni1)
+            }else if(count == 2){
+                var uni1 = parseInt($('#pecah1').val())
+                var uni2 = parseInt($('#pecah2').val())
+                var hargasatuan = prices / uni2
+                var total = parseInt(jumlah1 * uni1) + parseInt(jumlah2 * uni2)
+            }else if(count == 3){
+                var uni1 = parseInt($('#pecah1').val())
+                var uni2 = parseInt($('#pecah2').val())
+                var uni3 = parseInt($('#pecah3').val())
+                var hargasatuan = prices / uni3
+                var total = parseInt(jumlah1 * uni1) + parseInt(jumlah2 * uni2) + parseInt(jumlah3 * uni3)
+            }
         axios.post("{{url('/api/addkeranjangr')}}",{
             'invoiceid':invoiceid,
             'id_stok':stockId,
@@ -382,10 +461,25 @@
         }).then(function(res){
             data = res.data
             if(data.status == 200){
+                toastr.info('Tersimpan')
                 $('#isibody').load("{{ route('tmpdata')}}")
-                // kosong()
+                kosong()
             }
+        }).catch(function(err){
+            toastr.warning('Periksa Kembali')
         })
+    }
+
+    function kosong()
+    {
+        $("#stockId").val('').trigger('change')
+        $('#produktype').val('')
+        $('#produkbrand').val('')
+        $('#produknama').val('')
+        $('#prices').val('')
+        $('#finalselling').val('')
+        $('#isi1').html('')
+        $('#isi2').html('')
     }
 
     $('#compensation').change(function(){
@@ -398,38 +492,39 @@
         }
     })
 
-    $('#stockId').change(function(){
-        var stokid = $(this).val()
+   function pilihstok(stokid){
         var customer = $('#customerid').val()
+        var cabang = "{{session()->get('cabang')}}"
         axios.post("{{url('/api/getProduk')}}",{
-            'produk_id': stokid,
-            'cabang': "{{session()->get('cabang')}}"
+            'id_stok': stokid,
+            'cabang': cabang
         }).then(function(res){
             var data = res.data.data
-            stok(data.produk_id,data.jumlah)
+            stok(data.stok_id,cabang)
+            $('#stok_id').val(data.stok_id)
             $('#produkid').val(data.produk_id)
             $('#produktype').val(data.nama_type_produk)
             $('#produkbrand').val(data.produk_brand)
             $('#produknama').val(data.produk_nama)
             $('#prices').val(convertToRupiah(data.capital_price))
             $('#finalselling').val(convertToRupiah(data.capital_price))
-            
-        }).catch(function(err){
-            console.log(err)
-        })
-    })
-
-    function stok(id, jumlah)
-    {
-        axios.post("{{url('/api/cekstok')}}",{
-            'produk_id':id
-        }).then(function(res){
-            var data = res.data
-            $('#isi1').html(data)
+            $('#tmpmodal').modal('hide')
         }).catch(function(err){
             console.log(err)
         })
     }
+
+    function stok(id, cabang) {
+            axios.post("{{url('/api/cekstok')}}", {
+                'stok_id': id,
+                'cabang': cabang
+            }).then(function (res) {
+                var data = res.data
+                $('#isi1').html(data)
+            }).catch(function (err) {
+                console.log(err)
+            })
+        }
 
     function alls()
     {

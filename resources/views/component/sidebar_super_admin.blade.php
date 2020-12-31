@@ -14,11 +14,21 @@
                     <li><a href="{{ route('approvesales') }}">Data Sales</a></li>
                 </ul>
             </li>
-            <li><a><i class="fa fa-file"></i> Report Cabang <span class="fa fa-chevron-down"></span></a>
+            <li><a><i class="fa fa-database"></i> Data Master <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
-                    <li><a href="{{ route('cost') }}">Data Cost</a></li>
-                    <li><a href="{{ route('sales_transaction') }}">Sales Transaction</a></li>
-                   
+                    <li><a href="{{route('produk')}}">Data Produk</a></li>
+                </ul>
+            </li>
+            <li><a><i class="fa fa-book"></i> Report <span class="fa fa-chevron-down"></span></a>
+                <ul class="nav child_menu">
+                    <li><a href="{{ route('report_produk') }}">Produk</a></li>
+                    <li><a href="{{ route('cost_report') }}">Cost</a></li>
+                    <li><a href="{{ route('sales_achievement') }}">Sales Achievement</a></li>
+                    <li><a href="{{ route('sales_transaksi') }}">Sales Transaction</a></li>
+                    <li><a href="{{ route('broken_exp_report') }}">Broken & Exp Movement</a></li>
+                    <li><a href="{{ route('stok-report') }}">Stok Inventory</a></li>
+                    <li><a href="{{ route('purchase-report') }}">Purchase</a></li>
+                    <li><a href="{{ route('purchase-return-report') }}">Purchase Return</a></li>
                 </ul>
             </li>
             <li><a href="{{ route('view_profile') }}"><i class="fa fa-user"></i> Profile </a>

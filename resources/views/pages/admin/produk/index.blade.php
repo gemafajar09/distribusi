@@ -2,9 +2,10 @@
 
 <!-- main content -->
 <!-- page Title -->
-@section('page-title','Ini Halaman Produk')
+@section('page-title','Halaman Produk')
 <!-- Page Content -->
 @section('content')
+@if(session()->get('level') == 4)
 <div class="mt-2">
     <div class="x_content">
         <div class="row bg-white p-3 rounded mb-3" style="box-shadow:1px 1px 4px grey;">
@@ -12,23 +13,33 @@
                 <form action="" method="POST">
                     @csrf
                     <div class="form-row">
-                    <div class="form-group col-sm-6">
+                    <div class="form-group col-sm-2">
                         <label for="">Tipe Produk</label>
                         <select name="id_type_produk" id="id_type_produk" class="selectpicker rounded"   data-width="100%" data-live-search="true" title="Pilih Tipe Produk" autocomplete="off" data-size="5">
                         </select>
                     </div>
-                    <div class="form-group col-sm-6">
+                    <div class="form-group col-sm-5">
                         <label for="">Produk Brand</label>
                         <input type="text" class="form-control rounded" name="produk_brand" id="produk_brand" placeholder="Produk Brand">
                     </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-sm-6">
+                    <div class="form-group col-sm-5">
                             <label for="">Produk Nama</label>
                             <input type="text" name="produk_nama" id="produk_nama" class="form-control rounded" placeholder="Produk Nama">
 
                         </div>
-                        <div class="form-group col-sm-3">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-sm-4">
+                        <label for="">Harga Modal</label>
+                                <div class="input-group">
+                                <div class="input-group-prepend">
+                                <div class="input-group-text">Rp</div>
+                                </div>
+
+                            <input type="number" name="harga_modal" id="harga_modal" class="form-control rounded" value="0">
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-4">
                             <label for="">Produk Harga</label>
                                 <div class="input-group">
                                 <div class="input-group-prepend">
@@ -38,7 +49,7 @@
                             <input type="number" name="produk_harga" id="produk_harga" class="form-control rounded" value="0">
                             </div>
                         </div>
-                        <div class="form-group col-sm-3">
+                        <div class="form-group col-sm-4">
                             <label for="">Stok</label>
                             <div class="input-group">
                                 <div class="input-group-prepend">
@@ -61,6 +72,7 @@
         </div>
     </div>
 </div>
+@endif
 <div class="row">
 <div class="col-sm-12">
     <div class="card-box table-responsive">
@@ -73,8 +85,8 @@
                     <th >Type Produk</th>
                     <th >Brand</th>
                     <th >Nama Produk</th>
-                    <th >Harga</th>
-                    <th >Min Stok</th>
+                    <th >Harga Jual</th>
+                    <th >Capital Price</th>
                     <th >Aksi</th>
                 </tr>
             </thead>
@@ -118,7 +130,17 @@
 
                         </div>
                         <div class="form-row">
-                        <div class="form-group col-sm-6">
+                            <div class="form-group col-sm-4">
+                            <label for="">Harga Modal</label>
+                                <div class="input-group">
+                                <div class="input-group-prepend">
+                                <div class="input-group-text">Rp</div>
+                                </div>
+
+                            <input type="number" name="harga_modal_edit" id="harga_modal_edit" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-4">
                             <label for="">Produk Harga</label>
                                 <div class="input-group">
                                 <div class="input-group-prepend">
@@ -128,7 +150,7 @@
                             <input type="number" name="produk_harga_edit" id="produk_harga_edit" class="form-control">
                             </div>
                         </div>
-                        <div class="form-group col-sm-6">
+                        <div class="form-group col-sm-4">
                             <label for="">Stok</label>
                             <div class="input-group">
                                 <div class="input-group-prepend">
@@ -167,17 +189,27 @@
             data:'produk_nama'
           },
           {
-            data:'produk_harga'
+            data:'produk_harga',
+            render: $.fn.dataTable.render.number( ',', '.', 2 )
           },
           {
-            data:'stok'
+            @if(session()->get('level') == 4)
+                data:'harga_modal',
+                render: $.fn.dataTable.render.number( ',', '.', 2 )
+            @else
+                data:null,
+                render: function(data, type, row, meta) {
+            return " " ;}
+            @endif
           },
           {
             data: null,
             render: function(data, type, row, meta) {
             return "<div>" +
-                "<button type='button' onclick='deleted(" + data.produk_id + ")' class='btn btn-danger btn-sm'>Hapus</button> " +
-                "<button type='button' onclick='ambilData(" + data.produk_id + ")' class='btn btn-success btn-sm'>Edit</button>" +
+            @if(session()->get('level') == 4)
+                `<button type='button' onclick='deleted("${data.produk_id}")' class='btn btn-danger btn-sm'>Hapus</button> ` +
+                `<button type='button' onclick='ambilData("${data.produk_id}")' class='btn btn-success btn-sm'>Edit</button>` +
+            @endif
             "</div>" ;
             }
           }
@@ -212,12 +244,15 @@
 
     $('#add').click(function(e){
         e.preventDefault();
+        var produk_id = '{{$inv}}';
         axios.post('{{url('/api/produk')}}',{
+            produk_id:produk_id,
             id_type_produk : $('#id_type_produk').val(),
             produk_brand : $('#produk_brand').val(),
             produk_nama : $('#produk_nama').val(),
             produk_harga : $('#produk_harga').val(),
             stok : $('#stok').val(),
+            harga_modal : $('#harga_modal').val(),
         })
         .then(function (res) {
             var data = res.data
@@ -238,12 +273,13 @@
         axios.get('{{url('/api/produk')}}/'+ id)
         .then(function(res) {
             var isi = res.data
-            document.getElementById('produk_id').value=isi.data.produk_id;
+            document.getElementById('produk_id').value=id;
             $("#id_type_produk_edit").val([isi.data.id_type_produk]).selectpicker('refresh');
             document.getElementById('produk_brand_edit').value=isi.data.produk_brand;
             document.getElementById('produk_nama_edit').value=isi.data.produk_nama;
             document.getElementById('produk_harga_edit').value=isi.data.produk_harga;
             document.getElementById('stok_edit').value=isi.data.stok;
+            document.getElementById('harga_modal_edit').value=isi.data.harga_modal;
             $('#modal').modal('show');
         })
     }
@@ -257,6 +293,7 @@
             produk_nama : $('#produk_nama_edit').val(),
             produk_harga : $('#produk_harga_edit').val(),
             stok : $('#stok_edit').val(),
+            harga_modal : $('#harga_modal_edit').val(),
         }).then(function(res){
            
             var data = res.data
@@ -275,6 +312,7 @@
         document.getElementById("produk_nama").value=null;
         document.getElementById("produk_harga").value=null;
         document.getElementById("stok").value=null;
+        document.getElementById("harga_modal").value=null;
         
     }
 </script>

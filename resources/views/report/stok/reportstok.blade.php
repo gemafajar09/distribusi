@@ -11,15 +11,15 @@
         <div class="row">
             <div class="col-sm-12">
         <div class="text-center">
-            <h4>Report Stock Inventory</h4>
-            <h5>SUMBER CAHAYA REZEKI</h5>
-            <h6>Jl. BY PASS TALUAK BUKITTINGGI, INDONESIA</h6>
-            <H6>PHONE : 085375715757 FAX : (0752) 8810863</H6>
-            <br>
+            <h4>Report Stok Inventory</h4>
+            <h5>{{$data_cabang->nama_cabang}}</h5>
+            <h6>{{$data_cabang->alamat}}</h6>
+            <H6>PHONE : {{$data_cabang->telepon}} EMAIL : {{$data_cabang->email}}</H6>
+            <hr style="border:2px solid black;">
         </div>
         </div>
         </div>
-        <br>
+        
     <table border="2" id="tabel"  style="border: 2px solid black; width:100%;">
     <thead>
                 <tr>
@@ -37,8 +37,8 @@
                    <td>{{$d['stok_id']}}</td> 
                    <td>{{$d['produk_nama']}}</td> 
                    <td>{{$d['jumlah']}}</td> 
-                   <td>{{$d['capital_price']}}</td> 
-                   <td>{{$d['produk_harga']}}</td>
+                   <td>{{"Rp " . number_format($d['capital_price'],2,',','.')}}</td> 
+                   <td>{{"Rp " . number_format($d['produk_harga'],2,',','.')}}</td>
                    <td>{{$d['nama_cabang']}}</td>
                 </tr>
                 @endforeach

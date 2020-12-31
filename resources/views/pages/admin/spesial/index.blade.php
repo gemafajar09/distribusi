@@ -2,7 +2,7 @@
 
 <!-- main content -->
 <!-- page Title -->
-@section('page-title','Ini Halaman Harga Khusus')
+@section('page-title','Halaman Harga Khusus')
 <!-- Page Content -->
 @section('content')
 <div class="mt-2">
@@ -118,10 +118,12 @@
             data:'produk_nama'
           },
           {
-            data:'produk_harga'
+            data:'produk_harga',
+            render: $.fn.dataTable.render.number( ',', '.', 2 )
           },
           {
-            data:'spesial_nominal'
+            data:'spesial_nominal',
+            render: $.fn.dataTable.render.number( ',', '.', 2 )
           },
           {
             data: null,

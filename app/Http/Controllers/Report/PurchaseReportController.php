@@ -66,35 +66,40 @@ class PurchaseReportController extends Controller
     }
 
     public function report_all($status,$id_cabang){
+        $data_cabang = DB::table('tbl_cabang')->where('id_cabang',$id_cabang)->first();
         $data = TransaksiPurchase::where('status',$status)->where('id_cabang',$id_cabang)->get();
         $dataisi = $this->conversi($data);
-        return view('report.purchase.reportpurchase',compact('dataisi'));
+        return view('report.purchase.reportpurchase',compact(['dataisi','data_cabang']));
     }
 
     public function report_today($status,$id_cabang){
+        $data_cabang = DB::table('tbl_cabang')->where('id_cabang',$id_cabang)->first();
         $data = DB::table('transaksi_purchase')->where('status',$status)->where('id_cabang',$id_cabang)->select(DB::raw('*'))
         ->whereRaw('Date(invoice_date) = CURDATE()')->get();;
         $dataisi = $this->conversi($data);
-        return view('report.purchase.reportpurchase',compact('dataisi'));
+        return view('report.purchase.reportpurchase',compact(['dataisi','data_cabang']));
     }
     public function report_month($month,$year,$status,$id_cabang){
+        $data_cabang = DB::table('tbl_cabang')->where('id_cabang',$id_cabang)->first();
         $data = DB::table('transaksi_purchase')->where('status',$status)->where('id_cabang',$id_cabang)->select(DB::raw('*'))
         ->whereMonth('invoice_date',$month)->whereYear('invoice_date',$year)->get();
         $dataisi = $this->conversi($data);
-        return view('report.purchase.reportpurchase',compact('dataisi'));
+        return view('report.purchase.reportpurchase',compact(['dataisi','data_cabang']));
     }
 
     public function report_year($year,$status,$id_cabang){
+        $data_cabang = DB::table('tbl_cabang')->where('id_cabang',$id_cabang)->first();
         $data = DB::table('transaksi_purchase')->where('status',$status)->where('id_cabang',$id_cabang)->select(DB::raw('*'))
         ->whereYear('invoice_date',$year)->get();
         $dataisi = $this->conversi($data);
-        return view('report.purchase.reportpurchase',compact('dataisi'));
+        return view('report.purchase.reportpurchase',compact(['dataisi','data_cabang']));
     }
     public function report_range($from,$to,$status,$id_cabang){
+        $data_cabang = DB::table('tbl_cabang')->where('id_cabang',$id_cabang)->first();
         $data = DB::table('transaksi_purchase')->where('status',$status)->where('id_cabang',$id_cabang)->select(DB::raw('*'))
         ->whereBetween('invoice_date',[$from, $to])->get();
         $dataisi = $this->conversi($data);
-        return view('report.purchase.reportpurchase',compact('dataisi'));
+        return view('report.purchase.reportpurchase',compact(['dataisi','data_cabang']));
     }
 
     // untuk detail report belum sempat ringkas
@@ -175,9 +180,7 @@ class PurchaseReportController extends Controller
     public function join_builder_detail($cabang,$id){
         $data = TransaksiPurchase::find($id);
         $inv = $data->invoice_id;
-        $status='1';
         $data = DB::table('transaksi_purchase_detail as tmp')
-            ->where('status',$status)
             ->where('id_cabang',$cabang)
             ->where('invoice_id',$inv)
             ->join('tbl_produk as a','a.produk_id','=','tmp.produk_id')
@@ -286,8 +289,9 @@ class PurchaseReportController extends Controller
     }
 
     public function report_edit_today($id_transaksi_purchase){
-        $data1 = DB::table('transaksi_purchase')->where('id_transaksi_purchase',$id_transaksi_purchase)->select('invoice_id','total','diskon','bayar','sisa')
+        $data1 = DB::table('transaksi_purchase')->where('id_transaksi_purchase',$id_transaksi_purchase)->select('invoice_id','total','diskon','bayar','sisa','id_cabang')
         ->first();
+        $data_cabang = DB::table('tbl_cabang')->where('id_cabang',$data1->id_cabang)->first();
         $inv_id = $data1->invoice_id;
         $calculate = [$data1->total,$data1->diskon,$data1->bayar,$data1->sisa];
         $data = DB::table('transaksi_purchase_detail as tmp')
@@ -298,7 +302,7 @@ class PurchaseReportController extends Controller
             ->select('id_transaksi_purchase_detail','invoice_id','invoice_date','transaksi_tipe','tmp.produk_id as produk_id','nama_type_produk','produk_brand','produk_nama','unit_satuan_price','quantity','diskon','total_price','nama_suplier','term_until')
             ->get();
         $datatmp = $this->data_print_edit($data);
-        return view('report.purchase_transaksi',compact(['datatmp','calculate']));
+        return view('report.purchase_transaksi',compact(['datatmp','calculate','data_cabang']));
     }
 
     public function data_print_edit($data){

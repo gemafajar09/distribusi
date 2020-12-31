@@ -123,6 +123,7 @@ class OpnameController extends Controller
                 ->where('id_cabang',$cabang)
                 ->where('id_gudang',$id_gudang->id_gudang)
                 ->select('tbl_stok.produk_id as produk_id','produk_nama','jumlah','capital_price','tbl_stok.stok_id as stok_id','balance','update_opname','jumlah_fisik','id_opname')
+                ->orderBy('produk_nama','asc')
                 ->get();
          return $data;
         
@@ -199,7 +200,7 @@ class OpnameController extends Controller
                     $jumlah_stok = implode(" ",$stokquantity);
                     $d->stok_quantity = $jumlah_stok;
                     $d->total_harga = $harga * $jumlah;
-                    $dataisi[] = ["capital_price"=>$capital_price,"jumlah"=>$d->stok_quantity,"produk_id"=>$d->produk_id,"stok_id"=>$d->stok_id,"total_harga"=>$d->total_harga];
+                    $dataisi[] = ["capital_price"=>$capital_price,"jumlah"=>$d->stok_quantity,"produk_id"=>$d->produk_id,"stok_id"=>$d->stok_id,"total_harga"=>"Rp " . number_format($d->total_harga,2,',','.')];
                 }
             return response()->json(['data'=>$dataisi]);
     }
@@ -228,6 +229,7 @@ class OpnameController extends Controller
 
 
     public function print_faktur($id_cabang,$id_gudang){
+        $data_cabang = DB::table('tbl_cabang')->where('id_cabang',$id_cabang)->first();
         $data = DB::table('tbl_opname')
                 ->leftJoin('tbl_stok','tbl_stok.stok_id','=','tbl_opname.stok_id')
                 ->join('tbl_produk','tbl_stok.produk_id','=','tbl_produk.produk_id')
@@ -235,6 +237,7 @@ class OpnameController extends Controller
                 ->where('tbl_stok.id_gudang',$id_gudang)
                 ->select('produk_nama','tbl_produk.produk_id as produk_id','jumlah','capital_price','balance','update_opname','jumlah_fisik')
                 ->get();
+        $dataisi=[];
         foreach ($data as $d) {
             $jumlah = $d->jumlah;
             $jumlah_fisik = $d->jumlah_fisik;
@@ -255,7 +258,7 @@ class OpnameController extends Controller
             $dataisi[] = ["produk_nama"=>$d->produk_nama,"capital_price"=>$d->capital_price,"jumlah"=>$jumlah,"balance"=>$d->balance,"update_opname"=>$d->update_opname,"selisih"=>$selisih,'jumlah_fisik'=>$jumlah_fisik];
         }
 
-        return view('report.reportopname',compact(['dataisi']));
+        return view('report.reportopname',compact(['dataisi','data_cabang']));
     }
 
 

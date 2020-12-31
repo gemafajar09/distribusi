@@ -14,12 +14,15 @@ class SalesController extends Controller
     public function __construct()
     {
         $this->rules = array(
-            'id_sales' => 'numeric',
+            'id_sales' => '',
             'nama_sales' => 'required|regex:/(^[A-Za-z0-9 ]+$)+/',
             'alamat' => 'required|regex:/(^[A-Za-z0-9 .,]+$)+/',
             'telepon' => 'required|numeric',
             'target'=>'numeric',
-            'id_cabang'=>'numeric'
+            'id_cabang'=>'numeric',
+            'username' => 'required',
+            'password' => 'required',
+            'password1' => 'required'
         );
         $this->messages = array(
             'regex' => 'The Symbol Are Not Allowed'
@@ -29,13 +32,31 @@ class SalesController extends Controller
 
     public function index()
     {
-        return view("pages.admin.sales.index");
+        $codeinv = DB::table('tbl_sales')->orderBy('id_sales','desc')->first();
+                if($codeinv == NULL){
+                    $inv= "SL-00001";
+                }else{
+                    $cekinv = substr($codeinv->id_sales,3,10);
+                    $plus = (int)$cekinv + 1;
+                    $index = (int)$cekinv;
+                    if($index < 9){
+                        $inv = "SL-0000".$plus;
+                    }
+                    else if($index >= 9 && $index < 99){
+                        $inv = "SL-000".$plus;
+                    }else if($index >= 99 && $index < 999){
+                        $inv = "SL-00".$plus;
+                    }else if($index >= 999 && $index < 9999){
+                        $inv = "SL-0".$plus;
+                    }
+                }
+        return view("pages.admin.sales.index",compact('inv'));
     }
 
     public function datatable($id_cabang)
     {
         // untuk datatables Sistem Join Query Builder
-        return datatables()->of(Sales::where('id_cabang',$id_cabang)->get())->toJson();
+        return datatables()->of(DB::table('tbl_sales')->where('id_cabang',$id_cabang)->get())->toJson();
     }
 
 
@@ -43,9 +64,10 @@ class SalesController extends Controller
     {
         try {
             if ($id) {
-                $data = Sales::findOrFail($id);
+                // $data = Sales::findOrFail($id);
+                $data = DB::table('tbl_sales')->where('id_sales',$id)->first();
             } else {
-                $data = Sales::all();
+                $data = DB::table('tbl_sales')->get();
             }
             return response()->json(['data' => $data, 'status' => 200]);
         } catch (ModelNotFoundException $e) {
@@ -60,7 +82,24 @@ class SalesController extends Controller
         if ($validator->fails()) {
             return response()->json(['messageForm' => $validator->errors(), 'status' => 422, 'message' => 'Data Tidak Valid']);
         } else {
-            return response()->json(['id' => Sales::create($request->all())->id_sales, 'message' => 'Data Berhasil Ditambahkan', 'status' => 200]);
+            if($request->password == $request->password1)
+            {
+                $pass = password_hash($request->password, PASSWORD_DEFAULT);
+                $data = DB::table('tbl_sales')->insert([
+                    'id_sales' => $request->id_sales,
+                    'nama_sales' => $request->nama_sales,
+                    'alamat' => $request->alamat,
+                    'telepon' => $request->telepon,
+                    'target' => $request->target,
+                    'id_cabang' => $request->id_cabang,
+                    'username' => $request->username,
+                    'password' => $pass,
+                    'password1' => $request->password1
+                ]);
+                return response()->json(['message' => 'Data Berhasil Ditambahkan', 'status' => 200]);
+            }else{
+                return response()->json(['message' => 'Password Tidak Valid', 'status' => 200]);
+            }
         }
     }
 
@@ -73,12 +112,21 @@ class SalesController extends Controller
             if ($validator->fails()) {
                 return response()->json(['messageForm' => $validator->errors(), 'status' => 422, 'message' => 'Data Tidak Valid']);
             } else {
-                $edit->nama_sales = $request->input('nama_sales');
-                $edit->alamat = $request->input('alamat');
-                $edit->telepon = $request->input('telepon');
-                $edit->target = $request->input('target');
-                $edit->save();
-                return response()->json(['message' => 'Data Berhasil Di Edit', 'data' => $edit, 'status' => 200]);
+                if($request->password == $request->password1)
+                {
+                    $pass = password_hash($request->password, PASSWORD_DEFAULT);
+                    $edit->nama_sales = $request->input('nama_sales');
+                    $edit->alamat = $request->input('alamat');
+                    $edit->telepon = $request->input('telepon');
+                    $edit->target = $request->input('target');
+                    $edit->username = $request->input('username');
+                    $edit->password = $pass;
+                    $edit->password1 = $request->input('password1');
+                    $edit->save();
+                    return response()->json(['message' => 'Data Berhasil Di Edit', 'data' => $edit, 'status' => 200]);
+                }else{
+                    return response()->json(['message' => 'Password Tidak Valid', 'status' => 200]);
+                }
             }
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Data Tidak Ditemukan', 'status' => 404]);
@@ -97,7 +145,44 @@ class SalesController extends Controller
     }
 
     public function getSales($id_cabang){
-            $data = Sales::where('id_cabang',$id_cabang)->select('id_sales','nama_sales')->get();
+            $data = DB::table('tbl_sales')->where('id_cabang',$id_cabang)->get();
             return response()->json(['data' => $data, 'status' => 200]);
+    }
+
+    public function loginsales(Request $r)
+    {
+        $username = $r->username;
+        $password = $r->password;
+        $data = array();
+        $cek = DB::table('tbl_sales')->where('username',$username)->first();
+        if($cek->username == TRUE)
+        {
+            if(password_verify($password,$cek->password))
+            {
+                $data = array(
+                    'nama_sales' => $cek->nama_sales,
+                    'id_sales' => $cek->id_sales,
+                    'id_cabang' => $cek->id_cabang,
+                    'status' => 1
+                );
+                return response()->json(['data' => $data]);
+            }else{
+                $data = array(
+                    'nama_sales' => '',
+                    'id_sales' => '',
+                    'id_cabang' => '',
+                    'status' => 0
+                );
+                return response()->json(['data' => $data]);
+            }
+        }else{
+            $data = array(
+                'nama_sales' => '',
+                'id_sales' => '',
+                'id_cabang' => '',
+                'status' => 0
+            );
+            return response()->json(['data' => $data]);
+        }
     }
 }

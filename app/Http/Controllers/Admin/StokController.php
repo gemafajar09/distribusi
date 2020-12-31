@@ -100,7 +100,7 @@ class StokController extends Controller
             $d->stok_quantity = $jumlah_stok;
             $d->total_harga = $harga * $d->jumlah;
 
-            $dataisi[] = ["id_unit"=>$id,"produk_nama"=>$d->produk_nama,"capital_price"=>$capital_price,"stok_harga"=>number_format($d->total_harga,2,'.',''),"jumlah"=>$d->stok_quantity];
+            $dataisi[] = ["id_unit"=>$id,"produk_nama"=>$d->produk_nama,"capital_price"=>"Rp " . number_format($capital_price,2,',','.'),"stok_harga"=>"Rp " . number_format($d->total_harga,2,',','.'),"jumlah"=>$d->stok_quantity];
 
         }
 
@@ -245,10 +245,92 @@ class StokController extends Controller
             $jumlah_stok = implode(" ",$stokquantity);
             $d->stok_quantity = $jumlah_stok;
             $d->total_harga = $harga * $d->jumlah;
-            $dataisi[] = ["id_unit"=>$id,"produk_nama"=>$d->produk_nama,"capital_price"=>$capital_price,"stok_harga"=>number_format($d->total_harga,2,'.',''),"jumlah"=>$d->stok_quantity,'stok_id'=>$d->stok_id];
+            $dataisi[] = ["id_unit"=>$id,"produk_nama"=>$d->produk_nama,"capital_price"=>"Rp " . number_format($capital_price,2,',','.'),"stok_harga"=>"Rp " . number_format($d->total_harga,2,',','.'),"jumlah"=>$d->stok_quantity,'stok_id'=>$d->stok_id];
         }
        
         return datatables()->of($dataisi)->toJson();
         
+    }
+    
+    public function stokCleaning($id_cabang){
+        $jumlah_stok = 0;
+        $data = DB::table('tbl_stok')->where('id_cabang',$id_cabang)->where('jumlah',$jumlah_stok)->delete();
+        return response()->json(['status'=>200]);
+    }
+    
+    public function stokprice($id_cabang){
+        $id_gudang = DB::table('tbl_gudang')->where('id_cabang',$id_cabang)->first();
+        $data = DB::table('tbl_stok')->join('tbl_produk as prdk','prdk.produk_id','=','tbl_stok.produk_id')->where('id_gudang',$id_gudang->id_gudang)->get();
+        $total = 0;
+        foreach ($data as $d) {
+            $id = $d->produk_id;
+            $harga = $d->capital_price;
+            $proses = DB::table('tbl_unit')->where('produk_id',$id)
+                        ->join('tbl_satuan','tbl_unit.maximum_unit_name','=','tbl_satuan.id_satuan')
+                        ->select('id_unit','nama_satuan as unit','default_value')
+                        ->orderBy('id_unit','ASC')
+                        ->get();
+            foreach ($proses as $index => $list) {
+                if($index == 0 ){
+                    $harga = $harga / $list->default_value;
+                }else if($index == 1){
+                    $harga = $harga / $list->default_value;
+                }else if($index == 2){
+                    $harga = $harga / $list->default_value;  
+                }    
+            }
+            $total += $harga * $d->jumlah;
+        }
+
+        return response()->json(['data'=>"Rp. " . number_format($total,2,',','.')]);
+    }
+    
+    public function profit($id_cabang,$bulan){
+        $tahun = date('Y');
+        $data_transaksi_sales = DB::table('transaksi_sales')
+                                ->join('transaksi_sales_details as d','d.invoice_id','=','transaksi_sales.invoice_id')
+                                ->join('tbl_user','tbl_user.id_user','=','transaksi_sales.id_user')
+                                ->where('tbl_user.id_cabang',$id_cabang)
+                                ->whereMonth('transaksi_sales.invoice_date',$bulan)
+                                ->whereYear('transaksi_sales.invoice_date',$tahun)
+                                ->where('approve',1)
+                                ->select(DB::raw('SUM(totalsales-transaksi_sales.diskon) as total_sales'))->get();
+                                
+        
+        
+        $data = DB::table('transaksi_sales_details')->whereMonth('transaksi_sales_details.invoice_date',$bulan)->whereYear('transaksi_sales_details.invoice_date',$tahun)
+                ->join('tbl_stok','tbl_stok.stok_id','=','transaksi_sales_details.stok_id')
+                ->join('tbl_user','tbl_user.id_user','=','transaksi_sales_details.id_user')
+                ->join('transaksi_sales','transaksi_sales.invoice_id','=','transaksi_sales_details.invoice_id')
+                ->where('approve',1)
+                ->where('tbl_user.id_cabang',$id_cabang)
+                ->select('quantity','transaksi_sales_details.price as capital_price','tbl_stok.produk_id as produk_id')->get();
+                
+        $total_modal = 0;
+        
+        foreach ($data as $d) {
+            $id = $d->produk_id;
+            $harga_modal = $d->capital_price;
+            
+            $proses = DB::table('tbl_unit')->where('produk_id',$id)
+                        ->join('tbl_satuan','tbl_unit.maximum_unit_name','=','tbl_satuan.id_satuan')
+                        ->select('id_unit','nama_satuan as unit','default_value')
+                        ->orderBy('id_unit','ASC')
+                        ->get();
+            foreach ($proses as $index => $list) {
+                if($index == 0 ){
+                    $harga_modal = $harga_modal / $list->default_value;
+                    
+                }else if($index == 1){
+                    $harga_modal = $harga_modal / $list->default_value;
+                    
+                }else if($index == 2){
+                    $harga_modal = $harga_modal / $list->default_value;
+                     
+                }    
+            }
+            $total_modal += $harga_modal * $d->quantity;
+        }
+        return response()->json(['data'=>"Rp. " . number_format($data_transaksi_sales[0]->total_sales - $total_modal,2,',','.')]);
     }
 }

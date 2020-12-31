@@ -1,10 +1,11 @@
 <table id="datatable-keytable" class="table table-striped table-bordered" style="width:100%; font-size:11px">
     <thead>
         <tr>
-            <th>INVENTORY ID</th>
+            <th>PRODUCT ID</th>
             <th>PRODUCT DESCRIPTION</th>
             <th>QUANTITY</th>
             <th>PRICE</th>
+            <th>DISKON</th>
             <th>NOTE</th>
             <th>TOTAL</th>
             <th style="text-align:center">ACTION</th>
@@ -19,6 +20,7 @@
             <td>{{$a['produk_nama']}}</td>
             <td>{{$a['quantity']}}</td>
             <td>Rp.{{number_format($a['produk_harga'])}}</td>
+            <td>Rp.{{number_format($a['diskon'])}}</td>
             <td>{{$a['note']}}</td>
             <td>Rp.{{number_format($a['amount'])}}</td>
             <td style="text-align:center">

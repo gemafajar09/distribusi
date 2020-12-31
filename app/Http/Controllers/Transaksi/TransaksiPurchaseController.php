@@ -23,5 +23,12 @@ class TransaksiPurchaseController extends Controller
    public function view_edit_purchase(){
       return view('pages.transaksi.purchasetransaksi.edit');
   }
+  
+  public function totalpembelian($id_cabang,$bulan){
+     $tahun = date('Y');
+     $data = TransaksiPurchase::where('id_cabang',$id_cabang)->whereMonth('invoice_date',$bulan)->whereYear('invoice_date',$tahun)->where('status','1')->sum('total');
+     $jumlah = "Rp. " . number_format($data,2,',','.');
+     return response()->json(['data'=>$jumlah]);
+  }
    
 }

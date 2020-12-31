@@ -12,14 +12,14 @@
             <div class="col-sm-12">
         <div class="text-center">
             <h4>Report Purchase</h4>
-            <h5>SUMBER CAHAYA REZEKI</h5>
-            <h6>Jl. BY PASS TALUAK BUKITTINGGI, INDONESIA</h6>
-            <H6>PHONE : 085375715757 FAX : (0752) 8810863</H6>
-            <br>
+            <h5>{{$data_cabang->nama_cabang}}</h5>
+            <h6>{{$data_cabang->alamat}}</h6>
+            <H6>PHONE : {{$data_cabang->telepon}} EMAIL : {{$data_cabang->email}}</H6>
+            <hr style="border:2px solid black;">
         </div>
         </div>
         </div>
-        <br>
+        
     <table border="2" id="tabel"  style="border: 2px solid black; width:100%;">
     <thead>
     <tr>
@@ -39,10 +39,10 @@
                    <td>{{$d['invoice_id']}}</td>
                    <td>{{$d['invoice_date']}}</td>
                    <td>{{$d['transaksi_tipe']}}</td>
-                   <td>{{$d['total']}}</td>
-                   <td>{{$d['diskon']}}</td>
-                   <td>{{$d['bayar']}}</td>
-                   <td>{{$d['sisa']}}</td>
+                   <td>{{"Rp " . number_format($d['total'],2,',','.')}}</td>
+                    <td>{{"Rp " . number_format($d['diskon'],2,',','.')}}</td>
+                    <td>{{"Rp " . number_format($d['bayar'],2,',','.')}}</td>
+                    <td>{{"Rp " . number_format($d['sisa'],2,',','.')}}</td>
                    <td>{{$d['status']}}</td>
                 </tr>
                 @endforeach

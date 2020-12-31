@@ -18,7 +18,7 @@
     <tbody>
         <?php $total = 0; ?>
         @foreach($init as $i => $a)
-        <?php $total += $a['amount'] ?>
+        <?php $total += round($a['amount']) ?>
         <tr>
             <td>{{$i+1}}</td>
             <td>{{$a['stok_id']}}</td>
@@ -30,7 +30,7 @@
             <td style="text-align: center;">{{$a['quantity']}}</td>
             <td style="text-align: right;">Rp.{{$a['total']}}</td>
             <td style="text-align: center;">{{$a['diskon']}}</td>
-            <td style="text-align: right;">Rp.{{number_format($a['amount'])}}</td>
+            <td style="text-align: right;">Rp.{{number_format(round($a['amount']))}}</td>
             <td style="text-align: center;">
                 <button id="" onclick="deletes('{{$a['id_transaksi_tmp']}}')" class="btn btn-outline-danger btn-sm"><i class="fa fa-trash"></i></button>
             </td>

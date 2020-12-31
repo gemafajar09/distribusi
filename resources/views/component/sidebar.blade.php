@@ -33,11 +33,8 @@
                     </li>
                     <li><a><i class=""></i>Purchase Transaction <span class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu">
-<<<<<<< HEAD
                             <!-- <li><a href="{{ route('purchase_order') }}">Report Transaction</a></li> -->
-=======
                             <li><a href="{{ route('edit_purchase_order') }}">Edit Transaction</a></li>
->>>>>>> brokenother
                             <li><a href="{{ route('purchase_order') }}">Entry Transaction</a></li>
                             <li><a href="{{ route('return_purchase_order') }}">Return Transaction</a></li>
 
@@ -51,8 +48,10 @@
             </li>
             <li><a><i class="fa fa-book"></i> Report <span class="fa fa-chevron-down"></span></a>
                 <ul class="nav child_menu">
+                    <li><a href="{{ route('report_produk') }}">Produk</a></li>
                     <li><a href="{{ route('cost_report') }}">Cost</a></li>
                     <li><a href="{{ route('sales_achievement') }}">Sales Achievement</a></li>
+                    <li><a href="{{ route('sales_transaksi') }}">Sales Transaction</a></li>
                     <li><a href="{{ route('broken_exp_report') }}">Broken & Exp Movement</a></li>
                     <li><a href="{{ route('stok-report') }}">Stok Inventory</a></li>
                     <li><a href="{{ route('purchase-report') }}">Purchase</a></li>

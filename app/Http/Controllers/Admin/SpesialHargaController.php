@@ -19,7 +19,7 @@ class SpesialHargaController extends Controller
         $this->rules = array(
             'id_harga_khusus' => 'numeric',
             'id_customer' => 'required|numeric',
-            'produk_id' => 'required|numeric',
+            'produk_id' => 'required|',
             'spesial_nominal'=>'required|numeric',
         );
         
@@ -71,7 +71,8 @@ class SpesialHargaController extends Controller
     public function getProduk(Request $request, $id = null)
     {
        
-            $data = Produk::all('produk_id','produk_nama');
+            // $data = Produk::all('produk_id','produk_nama');
+            $data = DB::table('tbl_produk')->get();
             return response()->json(['data' => $data, 'status' => 200]);
         
     }

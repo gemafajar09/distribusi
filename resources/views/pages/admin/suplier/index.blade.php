@@ -2,7 +2,7 @@
 
 <!-- main content -->
 <!-- page Title -->
-@section('page-title','Ini Halaman Suplier')
+@section('page-title','Halaman Suplier')
 <!-- Page Content -->
 @section('content')
 <div class="mt-2">
@@ -221,8 +221,8 @@
             data: null,
             render: function(data, type, row, meta) {
             return "<div>" +
-                "<button type='button' onclick='deleted(" + data.id_suplier + ")' class='btn btn-danger btn-sm'>Hapus</button> " +
-                "<button type='button' onclick='ambilData(" + data.id_suplier + ")' class='btn btn-success btn-sm'>Edit</button>" +
+                `<button type='button' onclick='deleted("${data.id_suplier}")' class='btn btn-danger btn-sm'>Hapus</button> ` +
+                `<button type='button' onclick='ambilData("${data.id_suplier}")' class='btn btn-success btn-sm'>Edit</button>` +
             "</div>" ;
             }
           }
@@ -243,8 +243,9 @@
         var no_akun = $('#no_akun').val();
         var nama_akun = $('#nama_akun').val();
         var note = $('#note').val();
-
+        var id_suplier = '{{$inv}}';
         axios.post('{{url('/api/suplier/')}}',{
+            id_suplier:id_suplier,
             nama_suplier: nama_suplier,
             nama_perusahaan: nama_perusahaan,
             alamat: alamat,
@@ -278,7 +279,7 @@
         .then(function(res) {
             var isi = res.data
             console.log(isi.data)
-            document.getElementsByName('id_suplier')[0].value=isi.data.id_suplier;
+            document.getElementsByName('id_suplier')[0].value=id;
             document.getElementsByName('nama_suplier')[0].value=isi.data.nama_suplier;
             document.getElementsByName('nama_perusahaan')[0].value=isi.data.nama_perusahaan;
             document.getElementsByName('alamat')[0].value=isi.data.alamat;

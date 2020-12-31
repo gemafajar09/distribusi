@@ -11,7 +11,7 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <!-- live serch -->
     
-    <div class="container body">
+    <div class="container body" style="">
         <div class="main_container">
             <div class="col-md-3 left_col">
                 <div class="left_col scroll-view">
@@ -31,7 +31,7 @@
                     
                     @if(session()->get('level') == 1)
                     @include('component.sidebar_pimpinan')
-                    @elseif(session()->get('level') == 2)
+                    @elseif(session()->get('level') == 2 || session()->get('level') == 4)
                     @include('component.sidebar_super_admin')
                     @elseif(session()->get('level') == 3)
                     @include('component.sidebar')

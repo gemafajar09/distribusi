@@ -189,7 +189,8 @@
             data:'jumlah_broken'
           },
           {
-            data:'total'
+            data:'total',
+            render: $.fn.dataTable.render.number( ',', '.', 2 )
           },
           {
             data: null,
@@ -466,7 +467,7 @@
 
     $('#register').click(function(){
         id_cabang = {{session()->get('cabang')}}
-        window.open('{{url('/api/registerbroken/')}}/'+id_cabang+'/', "_blank");
+        window.open('{{url('/api/registerbroken')}}/'+id_cabang, "_blank");
         location.reload();
         
     });

@@ -14,7 +14,7 @@ class SuplierController extends Controller
     public function __construct()
     {
         $this->rules = array(
-            'id_suplier' => 'numeric',
+            'id_suplier' => '',
             'nama_suplier' => 'required|regex:/(^[A-Za-z0-9 ]+$)+/',
             'nama_perusahaan' => 'required|regex:/(^[A-Za-z0-9 .,]+$)+/',
             'alamat' => 'required|regex:/(^[A-Za-z0-9 .,]+$)+/',
@@ -36,13 +36,31 @@ class SuplierController extends Controller
 
     public function index()
     {
-        return view("pages.admin.suplier.index");
+        $codeinv = DB::table('tbl_suplier')->orderBy('id_suplier','desc')->first();
+                if($codeinv == NULL){
+                    $inv= "SPL-00001";
+                }else{
+                    $cekinv = substr($codeinv->id_suplier,4,10);
+                    $plus = (int)$cekinv + 1;
+                    $index = (int)$cekinv;
+                    if($index < 9){
+                        $inv = "SPL-0000".$plus;
+                    }
+                    else if($index >= 9 && $index < 99){
+                        $inv = "SPL-000".$plus;
+                    }else if($index >= 99 && $index < 999){
+                        $inv = "SPL-00".$plus;
+                    }else if($index >= 999 && $index < 9999){
+                        $inv = "SPL-0".$plus;
+                    }
+                }
+        return view("pages.admin.suplier.index",compact('inv'));
     }
 
     public function datatable($id_cabang)
     {
         // untuk datatables Sistem Join Query Builder
-        return datatables()->of(Suplier::where('id_cabang',$id_cabang)->get())->toJson();
+        return datatables()->of(DB::table('tbl_suplier')->orderBy('nama_suplier', 'ASC')->where('id_cabang',$id_cabang)->get())->toJson();
     }
 
     public function join_builder($id = null)
@@ -71,7 +89,8 @@ class SuplierController extends Controller
         if ($validator->fails()) {
             return response()->json(['messageForm' => $validator->errors(), 'status' => 422, 'message' => 'Data Tidak Valid']);
         } else {
-            return response()->json(['id' => Suplier::create($request->all())->id_suplier, 'message' => 'Data Berhasil Ditambahkan', 'status' => 200]);
+            $data = Suplier::insert($request->all());
+            return response()->json(['message' => 'Data Berhasil Ditambahkan', 'status' => 200]);
         }
     }
 
@@ -130,7 +149,7 @@ class SuplierController extends Controller
                 ->where('stk.id_suplier',$id)
                 ->where('stk.id_cabang',$id_cabang)
                 ->where('stk.id_gudang',$id_gudang->id_gudang)
-                ->select('prdk.produk_id as produk_id','produk_nama','capital_price','stk.stok_id as stok_id')
+                ->select('prdk.produk_id as produk_id','produk_nama','capital_price','stk.stok_id as stok_id','produk_harga')
                 ->get();
         return response()->json(['data' => $data, 'status' => 200]);
     }

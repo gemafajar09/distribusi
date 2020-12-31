@@ -15,7 +15,7 @@ class UnitController extends Controller
     {
         $this->rules = array(
             'id_unit'=>'numeric',
-            'produk_id'=>'required|numeric',
+            'produk_id'=>'required',
             'maximum_unit_name'=>'required|numeric',
             'minimum_unit_name'=>'required|numeric',
             'default_value'=>'required|numeric',

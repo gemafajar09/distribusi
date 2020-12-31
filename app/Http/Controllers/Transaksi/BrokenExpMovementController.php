@@ -17,8 +17,8 @@ class BrokenExpMovementController extends Controller
         $this->rules = array(
             'id_broken_exp' => '',
             'inv_broken_exp' => '',
-            'id_gudang_dari' => 'required|numeric',
-            'id_gudang_tujuan' => 'required|numeric',
+            'id_gudang_dari' => 'required|',
+            'id_gudang_tujuan' => 'required|',
             'stok_id' => 'required|numeric',
             'jumlah_broken' => 'required|numeric',
             'movement_date' => 'required|date',
@@ -214,6 +214,7 @@ class BrokenExpMovementController extends Controller
     }
 
     public function register($id_cabang){
+        $data_cabang = DB::table('tbl_cabang')->where('id_cabang',$id_cabang)->first();
         $data = DB::table('tbl_broken_exp as br')
                 ->where('br.id_cabang',$id_cabang)
                 ->where('status_broken','0')
@@ -247,6 +248,6 @@ class BrokenExpMovementController extends Controller
                 
 
         }
-        return view('report.brokenexp',compact(['dataconversi']));
+        return view('report.brokenexp',compact(['dataconversi','data_cabang']));
     }
 }
