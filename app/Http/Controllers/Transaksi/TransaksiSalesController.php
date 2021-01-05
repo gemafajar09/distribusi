@@ -591,7 +591,7 @@ class TransaksiSalesController extends Controller
                 'diskon' => number_format($a->diskon),
                 'amount' => ($a->quantity * $a->harga_satuan) - $a->diskon,
                 'id_transaksi_tmp' => $a->id_transaksi_detail,
-                'quantity' => implode(" ", $stokquantity)
+                'quantity' => implode(" ", $stokquantity),
             );
         }
         if ($type == 'CUSTOMER') {
@@ -602,11 +602,16 @@ class TransaksiSalesController extends Controller
                 ->first();
             $datas['sales'] = array(
                 'note' => $sales->note,
-                'id_sales' => $sales->sales_id,
+                'nama_sales' => '-',
                 'invoice_date' => $sales->invoice_date,
                 'transaksi_tipe' => $sales->transaksi_tipe,
                 'dp' => $sales->dp,
-                'diskon' => $sales->diskon
+                'diskon' => $sales->diskon,
+                'nama_customer' => $sales->nama_customer,
+                'alamat' => $sales->alamat,
+                'kota' => $sales->kota,
+                'telepon' => $sales->telepon,
+                'term_until' => $sales->term_until
             );
         } else {
             $sales = DB::table('transaksi_sales')
@@ -621,13 +626,19 @@ class TransaksiSalesController extends Controller
                 'invoice_date' => $sales->invoice_date,
                 'transaksi_tipe' => $sales->transaksi_tipe,
                 'diskon' => $sales->diskon,
-                'dp' => $sales->dp
+                'dp' => $sales->dp,
+                'nama_customer' => $sales->nama_customer,
+                'alamat' => $sales->alamat,
+                'kota' => $sales->kota,
+                'telepon' => $sales->telepon,
+                'term_until' => $sales->term_until
             );
         }
         $datas['inv'] = $id;
         return view("pages.transaksi.salestransaksi.faktur", $datas);
     }
-    
+
+
     // android
     public function apiproduk($cabang)
     {
@@ -800,7 +811,7 @@ class TransaksiSalesController extends Controller
             return response()->json(['status' => 200, 'stokdata' => $dataisi]);
         }
     }
-    
+
     public function apidatatable(Request $r)
     {
         $id = $r->id_sales;
@@ -813,69 +824,69 @@ class TransaksiSalesController extends Controller
             ->where('transaksi_sales_tmps.id_sales', $id)
             ->where('transaksi_sales_tmps.invoice_date', $date)
             ->get();
-            // dd($data);
+        // dd($data);
         $init = [];
         $format = '%d %s |';
         $stok = [];
         foreach ($data as $i => $a) {
             $proses = DB::table('tbl_unit')->where('produk_id', $a->produk_id)
-            ->join('tbl_satuan', 'tbl_unit.maximum_unit_name', '=', 'tbl_satuan.id_satuan')
-            ->select('id_unit', 'nama_satuan as unit', 'default_value')
-            ->orderBy('id_unit', 'ASC')
-            ->get();
-        // nilai jumlah dari tabel stok
-        $jumlah = $a->quantity;
-        $hasilbagi = 0;
+                ->join('tbl_satuan', 'tbl_unit.maximum_unit_name', '=', 'tbl_satuan.id_satuan')
+                ->select('id_unit', 'nama_satuan as unit', 'default_value')
+                ->orderBy('id_unit', 'ASC')
+                ->get();
+            // nilai jumlah dari tabel stok
+            $jumlah = $a->quantity;
+            $hasilbagi = 0;
             $stokquantity = [];
             foreach ($proses as $index => $list) {
                 $banyak = sizeof($proses);
-                if($index == 0 ){
+                if ($index == 0) {
                     $sisa = $jumlah % $list->default_value;
-                    $hasilbagi = ($jumlah-$sisa)/$list->default_value;
+                    $hasilbagi = ($jumlah - $sisa) / $list->default_value;
                     $satuan[$index] = $list->unit;
                     $value[$index] = $list->default_value;
                     $lebih[$index] = $sisa;
-                    if ($sisa > 0){
+                    if ($sisa > 0) {
                         $stok[] = sprintf($format, $sisa, $list->unit);
                     }
-                    if($banyak == $index+1){
+                    if ($banyak == $index + 1) {
                         $satuan = array();
                         $stok[] = sprintf($format, $hasilbagi, $list->unit);
                         $stokquantity = array_values($stok);
                         $stok = array();
                     }
-                }else if($index == 1){
+                } else if ($index == 1) {
                     $sisa = $hasilbagi % $list->default_value;
-                    $hasilbagi = ($hasilbagi-$sisa)/$list->default_value;
+                    $hasilbagi = ($hasilbagi - $sisa) / $list->default_value;
                     $satuan[$index] = $list->unit;
                     $value[$index] = $list->default_value;
                     $lebih[$index] = $sisa;
-                    if($sisa > 0){
-                        $stok[] = sprintf($format, $sisa+$lebih[$index-1], $satuan[$index-1]);
+                    if ($sisa > 0) {
+                        $stok[] = sprintf($format, $sisa + $lebih[$index - 1], $satuan[$index - 1]);
                     }
-                    if($banyak == $index+1){
+                    if ($banyak == $index + 1) {
                         $satuan = array();
                         $stok[] = sprintf($format, $hasilbagi, $list->unit);
                         $stokquantity = array_values($stok);
                         $stok = array();
                     }
-                }else if($index == 2){
+                } else if ($index == 2) {
                     $sisa = $hasilbagi % $list->default_value;
-                    $hasilbagi = ($hasilbagi-$sisa)/$list->default_value;
+                    $hasilbagi = ($hasilbagi - $sisa) / $list->default_value;
                     $satuan[$index] = $list->unit;
                     $value[$index] = $list->default_value;
                     $lebih[$index] = $sisa;
-                    if($sisa > 0){
-                        $stok[] = sprintf($format, $sisa, $satuan[$index-1]);
+                    if ($sisa > 0) {
+                        $stok[] = sprintf($format, $sisa, $satuan[$index - 1]);
                     }
-                    if($banyak == $index+1){
+                    if ($banyak == $index + 1) {
                         $satuan = array();
                         $stok[] = sprintf($format, $hasilbagi, $list->unit);
                         $stokquantity = array_values($stok);
                         $stok = array();
                     }
-                }    
-            } 
+                }
+            }
             $init[] = array(
                 'stok_id' => $a->stok_id,
                 'produk_id' => $a->produk_id,
@@ -888,12 +899,12 @@ class TransaksiSalesController extends Controller
                 'tot' => 0,
                 'amount' => ($a->quantity * $a->harga_satuan) - $a->diskon,
                 'id_transaksi_tmp' => $a->id_transaksi_tmp,
-                'quantity' => implode(" ",$stokquantity)
+                'quantity' => implode(" ", $stokquantity)
             );
         }
         return response()->json(['data' => $init]);
     }
-    
+
     public function addkeranjangapi(Request $r)
     {
         $cek = DB::table('transaksi_sales_tmps')
@@ -930,10 +941,11 @@ class TransaksiSalesController extends Controller
         }
     }
 
-    public function totalpenjualan($id_cabang,$bulan){
+    public function totalpenjualan($id_cabang, $bulan)
+    {
         $tahun = date('Y');
-        $data = DB::table('transaksi_sales')->join('transaksi_sales_details as d','d.invoice_id','=','transaksi_sales.invoice_id')->join('tbl_user','tbl_user.id_user','=','transaksi_sales.id_user')->where('tbl_user.id_cabang',$id_cabang)->whereMonth('transaksi_sales.invoice_date',$bulan)->whereYear('transaksi_sales.invoice_date',$tahun)->where('approve',1)->select(DB::raw('SUM(totalsales-transaksi_sales.diskon) as total_sales'))->get();
-        $jumlah = "Rp. " . number_format($data[0]->total_sales,2,',','.');
-        return response()->json(['data'=>$jumlah]);
+        $data = DB::table('transaksi_sales')->join('transaksi_sales_details as d', 'd.invoice_id', '=', 'transaksi_sales.invoice_id')->join('tbl_user', 'tbl_user.id_user', '=', 'transaksi_sales.id_user')->where('tbl_user.id_cabang', $id_cabang)->whereMonth('transaksi_sales.invoice_date', $bulan)->whereYear('transaksi_sales.invoice_date', $tahun)->where('approve', 1)->select(DB::raw('SUM(totalsales-transaksi_sales.diskon) as total_sales'))->get();
+        $jumlah = "Rp. " . number_format($data[0]->total_sales, 2, ',', '.');
+        return response()->json(['data' => $jumlah]);
     }
 }
