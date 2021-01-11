@@ -21,7 +21,7 @@
             $totaldis=0;
         ?>
         @foreach ($data as $d)
-        <?php 
+        <?php
             $total += $d->totalsales;
             $totaldis = $d->totalsales - $d->diskon;
         ?>
@@ -30,10 +30,10 @@
             <td>{{$d->invoice_date}}</td>
             <td>{{$d->transaksi_tipe}}</td>
             <td>{{$d->nama_customer}}</td>
-            <td>{{$d->totalsales}}</td>
+            <td>Rp.{{number_format($d->totalsales)}}</td>
             <td>{{$d->diskon}}</td>
-            <td>{{$d->dp}}</td>
-            <td>{{$totaldis}}</td>
+            <td>Rp.{{number_format($d->dp)}}</td>
+            <td>Rp.{{number_format($totaldis)}}</td>
             <td>{{$d->status}}</td>
             <td>{{$d->sales_type}}</td>
         </tr>
@@ -41,9 +41,9 @@
     </tbody>
     <tfoot>
         <td colspan="2">Total Transaction :</td>
-        <td colspan="4"><?=$total?></td>
+        <td colspan="4">Rp.<?=number_format($total)?></td>
         <td colspan="2">Total Profit / Loss :</td>
-        <td colspan="4">1</td>
+        <td colspan="4">Rp.<?=number_format($profit)?></td>
     </tfoot>
 </table>
 <script>

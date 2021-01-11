@@ -55,6 +55,7 @@ class CostReport extends Controller
 
     public function generatereport($id_cabang = null, $select = null, $input = null, $ket_waktu = null, $filtertahun = null, $filterbulan = null, $filter_year = null, $waktuawal = null, $waktuakhir = null)
     {
+        $data_cabang = DB::table('tbl_cabang')->where('id_cabang', $id_cabang)->first();
         $data = DB::table('tbl_cost')
             ->where('tbl_cost.id_cabang', $id_cabang)
             ->select('*')
@@ -87,6 +88,6 @@ class CostReport extends Controller
             }
         }
         $data = $data->select('*')->get();
-        return view('report.cost.printcostview', compact('data'));
+        return view('report.cost.printcostview', compact(['data', 'data_cabang']));
     }
 }

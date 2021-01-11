@@ -14,10 +14,9 @@
             <div class="col-sm-12">
                 <div class="text-center">
                     <h4>REPORT OF STOCK SALES RECAPITULATION</h4>
-                    <h5>CV. GEMILANG MITRA SUKSES</h5>
-                    <h6>GADUIK</h6>
-                    <h6>AGAM</h6>
-                    <H6>HP : 081363354666 / PHONE:(0752) 8810863</H6>
+                    <h5>{{$data_cabang->nama_cabang}}</h5>
+                    <h6>{{$data_cabang->alamat}}</h6>
+                    <h6>{{$data_cabang->telepon}}</h6>
                     <br>
                 </div>
             </div>

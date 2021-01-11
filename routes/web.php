@@ -4,14 +4,14 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     if (Session()->has('id')) {
-        if(session()->get('level') == 1)
-        return view('home_pimpinan');
-        else 
-        if(session()->get('level') == 2 || session()->get('level') == 4 )
-        return view('home_superadmin');
-        else 
-        if(session()->get('level') == 3)
-        return view('home');
+        if (session()->get('level') == 1)
+            return view('home_pimpinan');
+        else
+        if (session()->get('level') == 2 || session()->get('level') == 4)
+            return view('home_superadmin');
+        else
+        if (session()->get('level') == 3)
+            return view('home');
     } else {
         return view('pages.login');
     }
@@ -97,12 +97,10 @@ Route::group(['namespace' => 'Transaksi'], function () {
     });
     Route::group(['prefix' => 'opname'], function () {
 
-        Route::get('/stok_opname','OpnameController@index')->name('opname');
-        Route::get('/datatablesopname','OpnameController@datatablesopname')->name('datatablesopname');
-        Route::get('/list_aproval_opname','OpnameController@list_aproval')->name('aprovalopname');
-
+        Route::get('/stok_opname', 'OpnameController@index')->name('opname');
+        Route::get('/datatablesopname', 'OpnameController@datatablesopname')->name('datatablesopname');
+        Route::get('/list_aproval_opname', 'OpnameController@list_aproval')->name('aprovalopname');
     });
-    
 });
 
 Route::group(['namespace' => 'Report'], function () {
@@ -133,20 +131,21 @@ Route::group(['namespace' => 'Report'], function () {
         Route::get('/table_cost/{id_cabang?}/{select?}/{input?}/{ket_waktu?}/{filtertahun?}/{filterbulan?}/{filter_year?}/{waktuawal?}/{waktuakhir?}', 'CostReport@table')->name('table_cost');
         Route::get('/generate_cost/{id_cabang}/{select}/{input}/{ket_waktu}/{filtertahun}/{filterbulan}/{filter_year}/{waktuawal}/{waktuakhir}', 'CostReport@generatereport');
     });
-    
+
     Route::group(['prefix' => 'sales_transaksi'], function () {
         Route::get('/report', 'SalesTransaksiReport@index')->name('sales_transaksi');
         Route::get('/table_sales_transaksi/{ket_waktu?}/{filtertahun?}/{filterbulan?}/{filter_year?}/{waktuawal?}/{waktuakhir?}', 'SalesTransaksiReport@table')->name('table_sales_transaksi');
     });
-    
+
     Route::group(['prefix' => 'sales_achievement'], function () {
         Route::get('/report', 'SalesAchievementReport@index')->name('sales_achievement');
         Route::get('/table_achievement/{id_sales?}/{select?}/{ket_waktu?}/{filtertahun?}/{filterbulan?}/{filter_year?}/{waktuawal?}/{waktuakhir?}', 'SalesAchievementReport@transaksisales')->name('table_achievement');
-        Route::get('/report_all_stock', 'SalesAchievementReport@printallstock');
-        Route::get('/report_to_stock', 'SalesAchievementReport@printtostock');
-        Route::get('/report_canvas_stock', 'SalesAchievementReport@printcanvasstock');
+        Route::get('/report_all_stock/{id_cabang}', 'SalesAchievementReport@printallstock');
+        Route::get('/report_to_stock/{id_cabang}', 'SalesAchievementReport@printtostock');
+        Route::get('/report_canvas_stock/{id_cabang}', 'SalesAchievementReport@printcanvasstock');
+        Route::get('/datacredit/{id_sales?}/{ket_waktu?}/{filtertahun?}/{filterbulan?}/{filter_year?}/{waktuawal?}/{waktuakhir?}', 'SalesAchievementReport@datacredit')->name('tablecredit');
     });
-    
+
     Route::group(['prefix' => 'broken'], function () {
         // broken exp movement
         Route::get('/report', 'BrokenExpReport@index')->name('broken_exp_report');
@@ -154,7 +153,7 @@ Route::group(['namespace' => 'Report'], function () {
         Route::get('/printproduct/{search?}', 'BrokenExpReport@reportprint')->name('printproduct');
         Route::get('/tablereport/{search?}', 'BrokenExpReport@tablereport')->name('tablereport');
     });
-    
+
     Route::group(['prefix' => 'produk'], function () {
         Route::get('/report', 'ProdukReport@index')->name('report_produk');
         Route::get('/report_all_stock_spesifik/{id_cabang}/{produk_id}', 'ProdukReport@report_all_spesifik');
@@ -163,8 +162,8 @@ Route::group(['namespace' => 'Report'], function () {
         Route::get('/report_all_stock_spesifik_year/{year}/{id_cabang}/{produk_id}', 'ProdukReport@report_year_spesifik');
         Route::get('/report_all_stock_spesifik_range/{awal}/{akhir}/{id_cabang}/{produk_id}', 'ProdukReport@report_range_spesifik');
     });
-    
-    Route::group(['prefix' => 'rekap'],function(){
+
+    Route::group(['prefix' => 'rekap'], function () {
         Route::get('/rekap_transaksi/{id_cabang}/{waktu}', 'StokReportController@rekap_transaksi');
     });
 });

@@ -41,7 +41,7 @@ class CostController extends Controller
 
         $data['id_cabang'] = $id_cabang;
         $data['invoice'] = $invoice;
-        $data['datasales'] = DB::table('tbl_sales')->get();
+        $data['datasales'] = DB::table('tbl_sales')->where('tbl_sales.id_cabang', $id_cabang)->get();
 
         return view("pages.admin.cost.index", $data);
     }

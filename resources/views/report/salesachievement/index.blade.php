@@ -42,7 +42,7 @@
             <button class="btn btn-success btn-sm btn-block" onclick="refresh()">Refresh Report</button>
             <button class="btn btn-danger btn-sm btn-block" id="generate">Generate Report</button>
         </div>
-        <div>
+        <div class="mb-2">
             <label for="">Filter By :</label>
             <select name="" id="select" class="form-control">
                 <option value="alltransaction">-FILTER BY-</option>
@@ -52,6 +52,7 @@
                 <option value="3">CREDIT TRANSACTION</option>
             </select>
         </div>
+        <button class="btn btn-sm btn-outline-secondary" style="display: none" id="credit">CREDIT DETAILS</button>
         <br>
         <div class="btn-group-vertical d-flex justify-content-center" role="group" aria-label="Basic example">
             <button type="button" onclick="allstock()" class="btn btn-outline-secondary">View All Stock</button>
@@ -65,8 +66,27 @@
         </div>
     </div>
 </div>
+
+<!-- Modal  Payment-->
+<div class="modal fade" id="modalpayment" data-backdrop="static" data-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div id="detailpayment"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Keluar</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
     var cabang = {{ session()->get('cabang')}};
+
+    // $(document).ready(function () {
+    //     $('#isitable').load('{{route('tablecredit')}}')
+    // });
 
     $('#data_salesman').change(function(){
         var id_sales = $(this).val()
@@ -78,7 +98,7 @@
         })
     })
 
-    $('#generate').click(function () { 
+    $('#generate').click(function () {
         var filtertahun = $('#year').val()
         if(filtertahun == null)
         {
@@ -123,17 +143,20 @@
 
     function allstock()
     {
-    window.open(`{{url('/sales_achievement/report_all_stock')}}`);
+    var id_cabang = '{{session()->get('cabang')}}'
+    window.open(`{{url('/sales_achievement/report_all_stock')}}/` + id_cabang);
     }
 
     function tostock()
     {
-    window.open(`{{url('/sales_achievement/report_to_stock')}}`);
+    var id_cabang = '{{session()->get('cabang')}}'
+    window.open(`{{url('/sales_achievement/report_to_stock')}}/` + id_cabang);
     }
 
     function canvasstock()
     {
-    window.open(`{{url('/sales_achievement/report_canvas_stock')}}`);
+    var id_cabang = '{{session()->get('cabang')}}'
+    window.open(`{{url('/sales_achievement/report_canvas_stock')}}/` + id_cabang);
     }
 
     $("#waktu_awal" ).prop( "readonly", true );
@@ -180,7 +203,57 @@
             }
         })
 
-    
+    $('#select').change(function ()
+    {
+        var pilih = $(this).val()
+        console.log(pilih);
+        if(pilih == 3)
+        {
+            $('#credit').show()
+        }
+        else
+        {
+            $('#credit').hide()
+        }
+    });
+
+    $('#credit').click(function ()
+    {
+        var filtertahun = $('#year').val()
+        if(filtertahun == null)
+        {
+            filtertahun = 0;
+        }
+
+        var filterbulan = $('#month').val()
+        if(filterbulan == null)
+        {
+            filterbulan = 0;
+        }
+
+        var filter_tahun = $('#year_filter').val()
+        if(filter_tahun == null)
+        {
+            filter_tahun = 0;
+        }
+
+        var waktuawal = $('#waktu_awal').val()
+        if(waktuawal == "")
+        {
+            waktuawal = 0;
+        }
+
+        var waktuakhir = $('#waktu_akhir').val()
+        if(waktuakhir == "")
+        {
+            waktuakhir = 0;
+        }
+        var ket_waktu = $('#ket_waktu').val();
+        var id_sales = $('#data_salesman').val();
+        $('#modalpayment').modal('show')
+        $('#detailpayment').load('{{route('tablecredit')}}/' + id_sales + "/" + ket_waktu + "/"+  filtertahun +"/" + filterbulan + "/" +filter_tahun + "/" +waktuawal + "/" +waktuakhir)
+    });
+
     function refresh()
     {
         window.location.reload()
