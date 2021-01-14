@@ -61,13 +61,13 @@
         @foreach($hasil as $a)
         <tr>
             <td>{{$a['invoice_id']}}</td>
-            <td>{{$a['invoice_date']}}</td>
+            <td>{{tanggal_indonesia($a['invoice_date'])}}</td>
             <td>{{$a['nama_customer']}}</td>
             <td>{{$a['nama_sales']}}</td>
             <td>Rp.{{number_format($a['totalsales'])}}</td>
             <td>Rp.{{number_format($a['payment'])}}</td>
             <td>Rp.{{number_format($a['remaining'])}}</td>
-            <td>{{$a['term_until']}}</td>
+            <td>{{tanggal_indonesia($a['term_until'])}}</td>
             <td>{{$a['status']}}</td>
             <td style="text-align:center">
                 <button onclick="cekpayment('{{$a['invoice_id']}}')" type="button" class="btn btn-success btn-sm"><i class="fa fa-eye"></i></button>
@@ -101,6 +101,8 @@
                         <div class="col-md-3"><input type="text" id="remaining" readonly class="form-control"></div>
                         <div class="col-md-3"><b>Customer Name</b></div>
                         <div class="col-md-3"><input type="text" id="customers" readonly class="form-control"></div>
+                        <div class="col-md-3"><b>Tanggal Payment</b></div>
+                        <div class="col-md-3"><input type="date" id="tgl_payment" class="form-control"></div>
                         <div class="col-md-12">
                             <input type="radio" name="radio" id="changedue" onclick="getdue()">&nbsp; Change Due Date <br>
                             <input type="radio" name="radio" id="getpayment" onclick="getpay()">&nbsp; Get Payment
@@ -156,11 +158,13 @@
         var invoice_id = $('#invoicesales').val()
         var payment = $('#amountss').val()
         var status = $('#statuss').val()
+        var tgl_payment = $('#tgl_payment').val()
         axios.post("{{url('/api/addpayment')}}",{
             'payment_id':invoice_credit,
             'invoice_id':invoice_id,
             'payment':payment,
-            'status':status
+            'status':status,
+            'tgl_payment':tgl_payment
         }).then(function(res){
             var data = res.data
             location.reload()
@@ -243,7 +247,7 @@
             payments(id)
             $('#detailcredit').html(data)
             $('#payments').modal()
-            
+
         })
     }
 

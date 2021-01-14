@@ -14,7 +14,7 @@
                     <li><a href="{{ route('sales') }}">Data Sales</a></li>
                     <li><a href="{{ route('suplier') }}">Data Suplier</a></li>
                     <li><a href="{{route('customer')}}">Data Customer</a></li>
-                    
+
                     <li><a href="{{route('spesial')}}">Data Harga Kshusus</a></li>
                     <li><a href="{{route('type')}}">Data Type Produk</a></li>
                     <li><a href="{{route('unit')}}">Data Unit</a></li>

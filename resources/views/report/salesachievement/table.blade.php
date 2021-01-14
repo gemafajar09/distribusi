@@ -27,7 +27,7 @@
         ?>
         <tr>
             <td>{{$d->invoice_id}}</td>
-            <td>{{$d->invoice_date}}</td>
+            <td>{{tanggal_indonesia($d->invoice_date)}}</td>
             <td>{{$d->transaksi_tipe}}</td>
             <td>{{$d->nama_customer}}</td>
             <td>Rp.{{number_format($d->totalsales)}}</td>
@@ -43,7 +43,7 @@
         <td colspan="2">Total Transaction :</td>
         <td colspan="4">Rp.<?=number_format($total)?></td>
         <td colspan="2">Total Profit / Loss :</td>
-        <td colspan="4">Rp.<?=number_format($profit)?></td>
+        <td colspan="4">Rp.0</td>
     </tfoot>
 </table>
 <script>

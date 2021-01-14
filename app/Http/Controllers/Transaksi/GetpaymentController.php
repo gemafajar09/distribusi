@@ -18,38 +18,36 @@ class GetpaymentController extends Controller
     public function getcredit(Request $r)
     {
         $ids = $r->id_transkasi;
-        $inv = DB::table('tbl_getpayment')->orderBy('id_getpayment','desc')->first();
+        $inv = DB::table('tbl_getpayment')->orderBy('id_getpayment', 'desc')->first();
 
-        if($inv == NULL)
-        {
-            $invoice = 'CC-'.date('Ym')."-".date('H')."-1";
-        }else{
-            $cekinv = substr($inv->invoice_id,13,50);
+        if ($inv == NULL) {
+            $invoice = 'CC-' . date('Ym') . "-" . date('H') . "-1";
+        } else {
+            $cekinv = substr($inv->invoice_id, 13, 50);
             $plus = (int)$cekinv + 1;
-            $invoice = 'CC-'.date('Ym')."-".date('H').'-'.$plus;
+            $invoice = 'CC-' . date('Ym') . "-" . date('H') . '-' . $plus;
         }
-        $cek = DB::table('tbl_getpayment')->selectRaw('SUM(payment) as payment')->where('invoice_id',$ids)->first();
+        $cek = DB::table('tbl_getpayment')->selectRaw('SUM(payment) as payment')->where('invoice_id', $ids)->first();
         // ===================================
         $data = DB::table('transaksi_sales')
-                    ->join('tbl_customer','tbl_customer.id_customer','transaksi_sales.customer_id')
-                    ->where('transaksi_sales.invoice_id',$ids)
-                    ->first();
-                    if($data == TRUE)
-                    {
-                        return response()->json(['status' => 200, 'data' => $data, 'invoice' => $invoice, 'payment' => $cek->payment]);
-                    }else{
-                        return response()->json(['message' => 'Data Tidak Ditemukan', 'status' => 404]);
-                    }
+            ->join('tbl_customer', 'tbl_customer.id_customer', 'transaksi_sales.customer_id')
+            ->where('transaksi_sales.invoice_id', $ids)
+            ->first();
+        if ($data == TRUE) {
+            return response()->json(['status' => 200, 'data' => $data, 'invoice' => $invoice, 'payment' => $cek->payment]);
+        } else {
+            return response()->json(['message' => 'Data Tidak Ditemukan', 'status' => 404]);
+        }
     }
 
     public function getpayments(Request $r)
     {
         $id = $r->id_transkasi;
-        $data['detail'] = DB::table('tbl_getpayment')->where('invoice_id',$id)->get();
+        $data['detail'] = DB::table('tbl_getpayment')->where('invoice_id', $id)->get();
         // dd($data);
-        return view('pages.transaksi.getpayment.tabeldetailgetpayment',$data);
+        return view('pages.transaksi.getpayment.tabeldetailgetpayment', $data);
     }
- 
+
     public function caricustomer(Request $r)
     {
         $datas = DB::table('transaksi_sales')
@@ -57,30 +55,26 @@ class GetpaymentController extends Controller
             ->where('transaksi_sales.transaksi_tipe', 'Credit')
             ->where('transaksi_sales.status', 'UNPAID')
             ->where('transaksi_sales.approve', '1')
-            ->where('tbl_customer.nama_customer','Like','%'.$r->nama.'%')
+            ->where('tbl_customer.nama_customer', 'Like', '%' . $r->nama . '%')
             ->get();
 
-        if($datas == TRUE)
-        {
+        if ($datas == TRUE) {
             $data['hasil'] = [];
-            foreach($datas as $a)
-            {
-                $cek = DB::table('tbl_getpayment')->selectRaw('SUM(payment) as payment')->where('invoice_id',$a->invoice_id)->first();
-                $sales = DB::table('tbl_sales')->where('id_sales',$a->sales_id)->first();
+            foreach ($datas as $a) {
+                $cek = DB::table('tbl_getpayment')->selectRaw('SUM(payment) as payment')->where('invoice_id', $a->invoice_id)->first();
+                $sales = DB::table('tbl_sales')->where('id_sales', $a->sales_id)->first();
                 // dd($sales->nama_sales);
-                if($cek != NULL)
-                {
+                if ($cek != NULL) {
                     $payment = $cek->payment;
                     $sisa = $a->totalsales - $cek->payment;
-                }else{
+                } else {
                     $payment = 0;
                     $sisa = $a->totalsales - 0;
                 }
-                if($sales != NULL)
-                {
+                if ($sales != NULL) {
                     $namasales = $sales->nama_sales;
-                }else{
-                    $namasales = '-'; 
+                } else {
+                    $namasales = '-';
                 }
                 $data['hasil'][] = array(
                     'invoice_id' => $a->invoice_id,
@@ -94,7 +88,7 @@ class GetpaymentController extends Controller
                     'status' => $a->status
                 );
             }
-        }else{
+        } else {
             $data['hasil'] = array(
                 'invoice_id' => '',
                 'invoice_date' => '',
@@ -113,10 +107,9 @@ class GetpaymentController extends Controller
     public function changedue(Request $r)
     {
         $edit = DB::table('transaksi_sales')->where('id_transaksi_sales', $r->id_transaksi)->update(['term_until' => $r->tanggal]);
-        if($edit)
-        {
+        if ($edit) {
             return response()->json(['status' => 200]);
-        }else{
+        } else {
             return response()->json(['status' => 400]);
         }
     }
@@ -124,7 +117,7 @@ class GetpaymentController extends Controller
     public function detailtrans(Request $r)
     {
         $invoices = $r->id_transaksi;
-        
+
         $data = DB::table('transaksi_sales_details')
             ->join('tbl_stok', 'tbl_stok.stok_id', 'transaksi_sales_details.stok_id')
             ->join('tbl_produk', 'tbl_produk.produk_id', 'tbl_stok.produk_id')
@@ -132,7 +125,7 @@ class GetpaymentController extends Controller
             ->select('tbl_produk.produk_id', 'tbl_produk.produk_brand', 'tbl_produk.produk_nama', 'tbl_produk.produk_harga', 'price', 'transaksi_sales_details.*', 'tbl_type_produk.nama_type_produk', 'tbl_stok.stok_id')
             ->where('transaksi_sales_details.invoice_id', $invoices)
             ->get();
-        
+
         $detail = [];
         $format = '%d %s |';
         $stok = [];
@@ -216,16 +209,16 @@ class GetpaymentController extends Controller
         $simpan = new Getpayment();
         $simpan->payment_id = $r->payment_id;
         $simpan->invoice_id = $r->invoice_id;
-        $simpan->tgl_payment = date('Y-m-d');
+        // $simpan->tgl_payment = date('Y-m-d');
+        $simpan->tgl_payment = $r->tgl_payment;
         $simpan->payment = $r->payment;
         $simpan->status = $r->status;
         $simpan->save();
         $invoice = $r->invoice_id;
-        $data = DB::table('transaksi_sales')->where('invoice_id',$invoice)->first();
-        $pembayaran = DB::table('tbl_getpayment')->selectRaw('SUM(payment) as payment')->where('invoice_id',$invoice)->first();
-        if($data->totalsales == $pembayaran->payment)
-        {
-            DB::table('transaksi_sales')->where('id_transaksi_sales',$data->id_transaksi_sales)->update(['status' => 'PAID']);
+        $data = DB::table('transaksi_sales')->where('invoice_id', $invoice)->first();
+        $pembayaran = DB::table('tbl_getpayment')->selectRaw('SUM(payment) as payment')->where('invoice_id', $invoice)->first();
+        if ($data->totalsales == $pembayaran->payment) {
+            DB::table('transaksi_sales')->where('id_transaksi_sales', $data->id_transaksi_sales)->update(['status' => 'PAID']);
         }
     }
 }

@@ -19,7 +19,7 @@
         </div>
         </div>
         </div>
-        
+
     <table border="2" id="tabel"  style="border: 2px solid black; width:100%;">
     <thead>
     <tr>
@@ -34,22 +34,22 @@
                 <tr>
                 <td>{{$d->return_id}}</td>
                 <td>{{$d->nama_suplier}}</td>
-                <td>{{$d->return_date}}</td>
+                <td>{{tanggal_indonesia($d->return_date)}}</td>
                 <td>{{"Rp " . number_format($d->price,2,',','.')}}</td>
                 </tr>
                 @endforeach
             </tbody>
     </table>
-    
+
 </div>
 
-    
+
 <!-- script -->
 <script src="{{asset('/assets/vendors/jquery/dist/jquery.min.js')}}"></script>
 <script src="{{asset('/assets/vendors/bootstrap/dist/js/bootstrap.bundle.min.js')}}"></script>
 <script>
         $( document ).ready(function() {
-            window.print();   
+            window.print();
     });
     </script>
 </body>

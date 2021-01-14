@@ -19,9 +19,11 @@ class SalesTransaksiReport extends Controller
         return view('report.salestransaksi.index');
     }
 
-    public function table($ket_waktu, $filtertahun, $filterbulan, $filter_year, $waktuawal, $waktuakhir)
+    public function table($id_cabang, $ket_waktu, $filtertahun, $filterbulan, $filter_year, $waktuawal, $waktuakhir)
     {
-        $data = DB::table('transaksi_sales');
+        $data = DB::table('transaksi_sales')
+            ->leftJoin('transaksi_sales_details', 'transaksi_sales.invoice_id', 'transaksi_sales_details.invoice_id')
+            ->leftJoin('tbl_user', 'transaksi_sales_details.id_user', 'tbl_user.id_user');
         if ($ket_waktu == 1) {
             $data = $data->whereRaw('Date(invoice_date) = CURDATE()');
         }
@@ -34,7 +36,7 @@ class SalesTransaksiReport extends Controller
         if ($ket_waktu == 4) {
             $data = $data->whereBetween('invoice_date', [$waktuawal, $waktuakhir]);
         }
-        $data = $data->get();
+        $data = $data->where('tbl_user.id_cabang', $id_cabang)->get();
 
         $init = array();
         foreach ($data as $a) {
@@ -85,32 +87,52 @@ class SalesTransaksiReport extends Controller
                 ->get();
             $hasilbagi = 0;
             foreach ($proses as $index => $list) {
-                $banyak =  sizeof($proses);
-                $sisa = $a->quantity % $list->default_value;
-                $hasilbagi = ($a->quantity - $sisa) / $list->default_value;
-                $satuan[$index] = $list->unit;
-                $value_default[$index] = $list->default_value;
-                $lebih[$index] = $sisa;
+                $banyak = sizeof($proses);
+                $jumlah = $a->quantity;
                 if ($index == 0) {
+                    $sisa = $jumlah % $list->default_value;
+                    $hasilbagi = ($jumlah - $sisa) / $list->default_value;
+                    $satuan[$index] = $list->unit;
+                    $value[$index] = $list->default_value;
+                    $lebih[$index] = $sisa;
                     if ($sisa > 0) {
-                        $stok[$index] = sprintf($format, $sisa, $list->unit);
+                        $stok[] = sprintf($format, $sisa, $list->unit);
                     }
                     if ($banyak == $index + 1) {
-                        $stok[$index] = sprintf($format, $hasilbagi, $list->unit);
+                        $satuan = array();
+                        $stok[] = sprintf($format, $hasilbagi, $list->unit);
+                        $stokquantity = array_values($stok);
+                        $stok = array();
                     }
                 } else if ($index == 1) {
+                    $sisa = $hasilbagi % $list->default_value;
+                    $hasilbagi = ($hasilbagi - $sisa) / $list->default_value;
+                    $satuan[$index] = $list->unit;
+                    $value[$index] = $list->default_value;
+                    $lebih[$index] = $sisa;
                     if ($sisa > 0) {
-                        $stok[$index - 1] = sprintf($format, $sisa + $lebih[$index - 1], $satuan[$index - 1]);
+                        $stok[] = sprintf($format, $sisa + $lebih[$index - 1], $satuan[$index - 1]);
                     }
                     if ($banyak == $index + 1) {
-                        $stok[$index] = sprintf($format, $hasilbagi, $list->unit);
+                        $satuan = array();
+                        $stok[] = sprintf($format, $hasilbagi, $list->unit);
+                        $stokquantity = array_values($stok);
+                        $stok = array();
                     }
                 } else if ($index == 2) {
+                    $sisa = $hasilbagi % $list->default_value;
+                    $hasilbagi = ($hasilbagi - $sisa) / $list->default_value;
+                    $satuan[$index] = $list->unit;
+                    $value[$index] = $list->default_value;
+                    $lebih[$index] = $sisa;
                     if ($sisa > 0) {
-                        $stok[$index - 1] = sprintf($format, $sisa,  $satuan[$index - 1]);
+                        $stok[] = sprintf($format, $sisa, $satuan[$index - 1]);
                     }
                     if ($banyak == $index + 1) {
-                        $stok[$index] = sprintf($format, $hasilbagi, $list->unit);
+                        $satuan = array();
+                        $stok[] = sprintf($format, $hasilbagi, $list->unit);
+                        $stokquantity = array_values($stok);
+                        $stok = array();
                     }
                 }
             }
@@ -125,7 +147,7 @@ class SalesTransaksiReport extends Controller
                 'diskon' => $a->diskon,
                 'amount' => ($a->quantity * $a->harga_satuan) - $a->diskon,
                 'id_transaksi_tmp' => $a->id_transaksi_detail,
-                'quantity' => implode(" ", $stok)
+                'quantity' => implode(" ", $stokquantity)
             );
         }
         return view('report.salestransaksi.tabledetail', compact('datas'));

@@ -39,7 +39,7 @@
                             </tr>
                             <tr style="border: 1px solid black;">
                                 <th style="border: 1px solid black; width:150px; text-align:left">Tgl. Faktur :</th>
-                                <th style="border: 1px solid black; width:150px; text-align:right">{{$sales['invoice_date']}}</th>
+                                <th style="border: 1px solid black; width:150px; text-align:right">{{tanggal_indonesia($sales['invoice_date'])}}</th>
                             </tr>
                             <tr style="border: 1px solid black;">
                                 <th style="border: 1px solid black; width:150px; text-align:left">Tipe Faktur :</th>
@@ -47,7 +47,7 @@
                             </tr>
                             <tr style="border: 1px solid black;">
                                 <th style="border: 1px solid black; width:150px; text-align:left">Tgl. Jatuh Tempo :</th>
-                                <th style="border: 1px solid black; width:150px; text-align:right">{{$sales['term_until']}}</th>
+                                <th style="border: 1px solid black; width:150px; text-align:right">{{tanggal_indonesia($sales['term_until'])}}</th>
                             </tr>
                             <tr style="border: 1px solid black;">
                                 <th style="border: 1px solid black; width:150px; text-align:left">Salesman :</th>

@@ -61,13 +61,14 @@
     // $(document).ready(function () {
     //     $('#isitable').load('{{ route('table_sales_transaksi')}}')
     // });
-    function refresh() 
+    function refresh()
     {
         window.location.reload()
     }
 
     function pilihanfilter()
     {
+        var id_cabang = '{{session()->get('cabang')}}'
         var filtertahun = $('#year').val()
         if(filtertahun == null)
         {
@@ -99,7 +100,7 @@
         }
         var ket_waktu = $('#ket_waktu').val();
 
-        $('#isitable').load("{{ route('table_sales_transaksi') }}/" + ket_waktu + "/"+  filtertahun +"/" + filterbulan + "/" +filter_tahun + "/" +waktuawal + "/" +waktuakhir)
+        $('#isitable').load("{{ route('table_sales_transaksi') }}/"+id_cabang+ "/" + ket_waktu + "/"+  filtertahun +"/" + filterbulan + "/" +filter_tahun + "/" +waktuawal + "/" +waktuakhir)
     }
 
     $("#waktu_awal" ).prop( "readonly", true );

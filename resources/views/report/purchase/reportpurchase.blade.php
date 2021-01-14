@@ -19,7 +19,7 @@
         </div>
         </div>
         </div>
-        
+
     <table border="2" id="tabel"  style="border: 2px solid black; width:100%;">
     <thead>
     <tr>
@@ -37,7 +37,7 @@
                 @foreach($dataisi as $d)
                 <tr>
                    <td>{{$d['invoice_id']}}</td>
-                   <td>{{$d['invoice_date']}}</td>
+                   <td>{{tanggal_indonesia($d['invoice_date'])}}</td>
                    <td>{{$d['transaksi_tipe']}}</td>
                    <td>{{"Rp " . number_format($d['total'],2,',','.')}}</td>
                     <td>{{"Rp " . number_format($d['diskon'],2,',','.')}}</td>
@@ -48,16 +48,16 @@
                 @endforeach
             </tbody>
     </table>
-    
+
 </div>
 
-    
+
 <!-- script -->
 <script src="{{asset('/assets/vendors/jquery/dist/jquery.min.js')}}"></script>
 <script src="{{asset('/assets/vendors/bootstrap/dist/js/bootstrap.bundle.min.js')}}"></script>
 <script>
         $( document ).ready(function() {
-            window.print();   
+            window.print();
     });
     </script>
 </body>

@@ -28,6 +28,7 @@
                     <th>COST ID</th>
                     <th>ID REQUESTER</th>
                     <th>NAME</th>
+                    <th>OTHER</th>
                     <th>COST NAME</th>
                     <th>NOMINAL</th>
                     <th>COSTING DATE</th>
@@ -39,9 +40,10 @@
                     <td>{{$item->inv_cost}}</td>
                     <td>{{$item->id_sales}}</td>
                     <td>{{$item->nama_sales}}</td>
+                    <td>{{$item->note}}</td>
                     <td>{{$item->cost_nama}}</td>
-                    <td>{{$item->nominal}}</td>
-                    <td>{{$item->tanggal}}</td>
+                    <td>{{number_format($item->nominal)}}</td>
+                    <td>{{tanggal_indonesia($item->tanggal)}}</td>
                 </tr>
                 @endforeach
             </tbody>

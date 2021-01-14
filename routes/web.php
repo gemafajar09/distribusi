@@ -134,7 +134,7 @@ Route::group(['namespace' => 'Report'], function () {
 
     Route::group(['prefix' => 'sales_transaksi'], function () {
         Route::get('/report', 'SalesTransaksiReport@index')->name('sales_transaksi');
-        Route::get('/table_sales_transaksi/{ket_waktu?}/{filtertahun?}/{filterbulan?}/{filter_year?}/{waktuawal?}/{waktuakhir?}', 'SalesTransaksiReport@table')->name('table_sales_transaksi');
+        Route::get('/table_sales_transaksi/{id_cabang?}/{ket_waktu?}/{filtertahun?}/{filterbulan?}/{filter_year?}/{waktuawal?}/{waktuakhir?}', 'SalesTransaksiReport@table')->name('table_sales_transaksi');
     });
 
     Route::group(['prefix' => 'sales_achievement'], function () {
@@ -144,6 +144,11 @@ Route::group(['namespace' => 'Report'], function () {
         Route::get('/report_to_stock/{id_cabang}', 'SalesAchievementReport@printtostock');
         Route::get('/report_canvas_stock/{id_cabang}', 'SalesAchievementReport@printcanvasstock');
         Route::get('/datacredit/{id_sales?}/{ket_waktu?}/{filtertahun?}/{filterbulan?}/{filter_year?}/{waktuawal?}/{waktuakhir?}', 'SalesAchievementReport@datacredit')->name('tablecredit');
+    });
+
+    Route::group(['prefix' => 'get_payment'], function () {
+        Route::get('/report', 'GetPaymentReport@index')->name('get_payment_report');
+        Route::get('/tablegetpayment/{ket_waktu?}/{filtertahun?}/{filterbulan?}/{filter_year?}/{waktuawal?}/{waktuakhir?}/{select?}/{input?}', 'GetPaymentReport@table')->name('tabelgetpayment');
     });
 
     Route::group(['prefix' => 'broken'], function () {

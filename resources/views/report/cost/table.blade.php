@@ -5,6 +5,7 @@
             <th>Cost ID</th>
             <th>ID Requester</th>
             <th>Name</th>
+            <th>Other</th>
             <th>Cost Name</th>
             <th>Nominal</th>
             <th>Costing Date</th>
@@ -16,9 +17,10 @@
             <td>{{$cost->inv_cost}}</td>
             <td>{{$cost->id_sales}}</td>
             <td>{{$cost->nama_sales}}</td>
+            <td>{{$cost->note}}</td>
             <td>{{$cost->cost_nama}}</td>
-            <td>{{$cost->nominal}}</td>
-            <td>{{$cost->tanggal}}</td>
+            <td>Rp. {{number_format($cost->nominal)}}</td>
+            <td>{{tanggal_indonesia($cost->tanggal)}}</td>
         </tr>
         @endforeach
     </tbody>

@@ -46,6 +46,7 @@ class SalesAchievementReport extends Controller
             }
         }
         $datas = $datas->get();
+        // dd($datas);
 
         if ($datas == TRUE) {
             $data['hasil'] = [];
@@ -156,8 +157,8 @@ class SalesAchievementReport extends Controller
             $total_jual += $harga_jual * $d->quantity;
             $profit = $total_jual - $total_modal;
         }
-        // dd($data);
-        return view("report.salesachievement.table", compact(['data', 'profit']));
+        dd($total_modal, $total_jual);
+        return view("report.salesachievement.table", compact(['data']));
     }
 
     public function printallstock($id_cabang)

@@ -24,9 +24,9 @@
             <td>{{$i+1}}</td>
             <td>{{$a['nama_customer']}}</td>
             <td>{{$a['invoice_id']}}</td>
-            <td>{{$a['invoice_date']}}</td>
+            <td>{{tanggal_indonesia($a['invoice_date'])}}</td>
             <td>{{$a['transaksi_tipe']}}</td>
-            <td>{{$a['term_until']}}</td>
+            <td>{{tanggal_indonesia($a['term_until'])}}</td>
             <td>{{$a['nama_sales']}}</td>
             <td>Rp.{{number_format($a['totalsales'])}}</td>
             <td>Rp.{{number_format($a['diskon'])}}</td>
@@ -59,5 +59,5 @@
         })
     }
         $('#myTable').DataTable();
-    
+
 </script>

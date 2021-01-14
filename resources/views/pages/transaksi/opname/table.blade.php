@@ -9,7 +9,7 @@
 <table id="example2" class="table table-bordered" style="width:100%; font-size:11px">
     <thead>
         <tr style="text-align: center; font-size:10px">
-            <th rowspan="2" style="vertical-align : middle;text-align:center;">Nama Produk</th>  
+            <th rowspan="2" style="vertical-align : middle;text-align:center;">Nama Produk</th>
             <th style="width:70px;">System Stok</th>
             <th>Fisik Stok</th>
             <th>Unbalance</th>
@@ -33,7 +33,7 @@
         <?php $nilai[] = $d; ?>
         <tr>
             <td>{{$d['produk_nama']}}</td>
-           
+
             <td>{{$d['jumlah']}}</td>
             <!-- <td id="{{$d['stok_id']}}"><script>loadinput(`{{$d['produk_id']}}`,`{{$d['stok_id']}}`,`{{$d['capital_price']}}`);</script></td> -->
             <td id="{{$d['stok_id']}}"></td>
@@ -43,7 +43,7 @@
                 @if(empty($d['update_opname']))
                 {{"Not Update"}}
                 @else
-                {{$d['update_opname']}}
+                {{tanggal_indonesia($d['update_opname'])}}
                 @endif
             </td>
             <td>@if(empty($d['selisih']))
@@ -63,7 +63,7 @@
                 @else
                 {{"Not Cek"}}
                 @endif
-                </div> 
+                </div>
             </td>
             <td><input type="checkbox" id="cek" onclick="doalert(this,`{{$d['stok_id']}}`,`{{$d['id_opname']}}`)"> Cek</td>
         </tr>
@@ -79,7 +79,7 @@
                 tampilGudangAsal(res.data.data);
             })
         var data = <?=json_encode($nilai)?>;
-        
+
         for (var i = 0; i < data.length; i++) {
             loadinput(data[i].stok_id, data[i].capital_price)
         }
@@ -150,8 +150,8 @@
                                 var html = `<button class='btn btn-danger btn-sm' id='${stok_id}' onclick='adjustment(${id_opname},${stok_id})'>Adjust</button>`;
                                 nextd4.find('#adjust').html(html)
                                 }
-                            } 
-                             
+                            }
+
                             axios.post('{{url('/api/stok_opname')}}', {
                                 'stok_id': stok_id,
                                 'jumlah_fisik': unit3,

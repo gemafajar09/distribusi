@@ -19,7 +19,7 @@
         </div>
         </div>
         </div>
-        
+
     <table border="2" id="tabel"  style="border: 2px solid black; width:100%;">
     <thead>
                 <tr>
@@ -34,26 +34,26 @@
             <tbody>
                 @foreach($data as $d)
                 <tr>
-                   <td>{{$d['stok_id']}}</td> 
-                   <td>{{$d['produk_nama']}}</td> 
-                   <td>{{$d['jumlah']}}</td> 
-                   <td>{{"Rp " . number_format($d['capital_price'],2,',','.')}}</td> 
+                   <td>{{$d['stok_id']}}</td>
+                   <td>{{$d['produk_nama']}}</td>
+                   <td>{{$d['jumlah']}}</td>
+                   <td>{{"Rp " . number_format($d['capital_price'],2,',','.')}}</td>
                    <td>{{"Rp " . number_format($d['produk_harga'],2,',','.')}}</td>
                    <td>{{$d['nama_cabang']}}</td>
                 </tr>
                 @endforeach
             </tbody>
     </table>
-    
+
 </div>
 
-    
+
 <!-- script -->
 <script src="{{asset('/assets/vendors/jquery/dist/jquery.min.js')}}"></script>
 <script src="{{asset('/assets/vendors/bootstrap/dist/js/bootstrap.bundle.min.js')}}"></script>
 <script>
         $( document ).ready(function() {
-            window.print();   
+            window.print();
     });
     </script>
 </body>

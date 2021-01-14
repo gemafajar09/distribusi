@@ -45,7 +45,7 @@
             <td>{{$d['jumlah']}}</td>
             <td>{{$d['jumlah_fisik']}}</td>
             <td>{{$d['selisih']}}</td>
-            <td>{{$d['update_opname']}}
+            <td>{{tanggal_indonesia($d['update_opname'])}}
             </td>
             <td>@if($d['balance']=='0')
                 {{"Not Balance"}}
@@ -62,10 +62,10 @@
         @endforeach
     </tbody>
     </table>
-    
+
 </div>
 
-    
+
 <!-- script -->
 <script src="{{asset('/assets/vendors/jquery/dist/jquery.min.js')}}"></script>
 <script src="{{asset('/assets/vendors/bootstrap/dist/js/bootstrap.bundle.min.js')}}"></script>
@@ -79,9 +79,9 @@
                 $("#close").show();
             });
             $('#close').on('click',function(){
-        
+
                 window.close();
-                
+
             });
     });
     </script>

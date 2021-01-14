@@ -21,9 +21,9 @@
             <p>Suplier : {{$datatmp[0]['nama_suplier']}}</p>
         </div>
         </div>
-        
+
         <div class="col-sm-4">
-        <div class="text-center">   
+        <div class="text-center">
             <h5><b>PURCHASE ORDER<b></h5>
             <hr style="border-top:5px solid black; width:300px;">
             <h6>Invoice ID : {{$datatmp[0]['invoice_id']}}</h6>
@@ -34,7 +34,7 @@
                             <td>Invoice Date</td>
                         </tr>
                         <tr>
-                            <td>{{$datatmp[0]['invoice_date']}}</td>
+                            <td>{{tanggal_indonesia($datatmp[0]['invoice_date'])}}</td>
                         </tr>
                     </table>
                 </div>
@@ -71,12 +71,12 @@
                             <td>TERM</td>
                         </tr>
                         <tr>
-                            <td>{{$datatmp[0]['term_until']}}</td>
+                            <td>{{tanggal_indonesia($datatmp[0]['term_until'])}}</td>
                         </tr>
                     </table>
                 </div>
             </div>
-            
+
         </div>
         </div>
         </div>
@@ -119,7 +119,7 @@
             <div class="row">
             <div class="col-sm-8">
                     <p>............................</p>
-                    <p>Tanggal : {{date('d-m-Y')}}</p>
+                    <p>Tanggal : {{tanggal_indonesia('d-m-Y')}}</p>
                 </div>
                 <div class="col-sm-4">
                 <p>............................</p>
@@ -154,7 +154,7 @@
     </div>
 </div>
 
-    
+
 <!-- script -->
 <script src="{{asset('/assets/vendors/jquery/dist/jquery.min.js')}}"></script>
 <script src="{{asset('/assets/vendors/bootstrap/dist/js/bootstrap.bundle.min.js')}}"></script>
@@ -168,9 +168,9 @@
                 $("#close").show();
             });
             $('#close').on('click',function(){
-        
+
                 window.close();
-                
+
             });
     });
     </script>

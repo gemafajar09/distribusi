@@ -180,13 +180,17 @@
             data: 'note'
           },
           {
-            data: 'tanggal'
+            data: null,
+            render: function(data, type, row, meta) {
+            return moment(new Date(data.tanggal)).format("Do MMMM YYYY");
+            }
           },
           {
             data: 'cost_nama'
           },
           {
-            data: 'nominal'
+            data: 'nominal',
+            render: $.fn.dataTable.render.number( ',', '.', 2 )
           },
           {
             data: null,
