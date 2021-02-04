@@ -20,7 +20,7 @@
             <td>{{$cost->note}}</td>
             <td>{{$cost->cost_nama}}</td>
             <td>Rp. {{number_format($cost->nominal)}}</td>
-            <td>{{tanggal_indonesia($cost->tanggal)}}</td>
+            <td>{{date('d-m-Y',strtotime($cost->tanggal))}}</td>
         </tr>
         @endforeach
     </tbody>

@@ -39,7 +39,7 @@
                             </tr>
                             <tr style="border: 1px solid black;">
                                 <th style="border: 1px solid black; width:150px; text-align:left">Tgl. Faktur :</th>
-                                <th style="border: 1px solid black; width:150px; text-align:right">{{tanggal_indonesia($sales['invoice_date'])}}</th>
+                                <th style="border: 1px solid black; width:150px; text-align:right">{{date('d-m-Y',strtotime($sales['invoice_date']))}}</th>
                             </tr>
                             <tr style="border: 1px solid black;">
                                 <th style="border: 1px solid black; width:150px; text-align:left">Tipe Faktur :</th>
@@ -47,7 +47,7 @@
                             </tr>
                             <tr style="border: 1px solid black;">
                                 <th style="border: 1px solid black; width:150px; text-align:left">Tgl. Jatuh Tempo :</th>
-                                <th style="border: 1px solid black; width:150px; text-align:right">{{tanggal_indonesia($sales['term_until'])}}</th>
+                                <th style="border: 1px solid black; width:150px; text-align:right">{{date('d-m-Y',strtotime($sales['term_until']))}}</th>
                             </tr>
                             <tr style="border: 1px solid black;">
                                 <th style="border: 1px solid black; width:150px; text-align:left">Salesman :</th>
@@ -118,11 +118,11 @@
                 <tr>
                     <td style="border:1px; height:1px; border: 1px solid black;">{{$d['produk_nama']}}</td>
                     <td style="border:1px; height:1px; border: 1px solid black;">{{$d['quantity']}}</td>
-                    <td style="border:1px; height:1px; border: 1px solid black;">Rp.{{$d['produk_harga']}}</td>
-                    <td style="border:1px; height:1px; border: 1px solid black;">Rp.{{$d['total']}}</td>
-                    <td style="border:1px; height:1px; border: 1px solid black;">Rp.{{$d['diskon']}}</td>
+                    <td style="border:1px; height:1px; border: 1px solid black;">{{$d['produk_harga']}}</td>
+                    <td style="border:1px; height:1px; border: 1px solid black;">{{$d['total']}}</td>
+                    <td style="border:1px; height:1px; border: 1px solid black;">{{$d['diskon']}}</td>
                     <td style="border:1px; height:1px; border: 1px solid black; text-align:right">
-                        Rp.{{number_format($d['amount'])}}</td>
+                        {{number_format($d['amount'])}}</td>
                 </tr>
                 @endforeach
                 <tr style="border:0 solid white">
@@ -197,13 +197,13 @@
                     <td colspan="4">&nbsp;</td>
                 </tr>
                 <tr>
-                    <td><br>_ _ _ _ _ _ _ _ _ _ _ <br>
+                    <td><br><hr style="width: 40%"><br>
                     Admin Sales
                     </td>
-                    <td><br>_ _ _ _ _ _ _ _ _ _ _ <br>
+                    <td><br><hr style="width: 50%"><br>
                     Pimpinan
                     </td>
-                    <td>_ _ _ _ _ _ _ _ _ _ _</td>
+                    <td>{{$init[0]['nama_gudang']}}</td>
                     <td>_ _ _ _ _ _ _ _ _ _ _</td>
                     <td>_ _ _ _ _ _ _ _ _ _ _</td>
                 </tr>

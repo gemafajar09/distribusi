@@ -16,27 +16,65 @@ class SalesTransaksiReport extends Controller
 {
     public function index()
     {
-        return view('report.salestransaksi.index');
+        $data['toko'] = DB::table('tbl_customer')->get();
+        return view('report.salestransaksi.index', $data);
     }
 
-    public function table($id_cabang, $ket_waktu, $filtertahun, $filterbulan, $filter_year, $waktuawal, $waktuakhir)
+    public function table($id_cabang, $status, $namatoko, $ket_waktu, $filtertahun, $filterbulan, $filter_year, $waktuawal, $waktuakhir)
     {
-        $data = DB::table('transaksi_sales')
-            ->leftJoin('transaksi_sales_details', 'transaksi_sales.invoice_id', 'transaksi_sales_details.invoice_id')
-            ->leftJoin('tbl_user', 'transaksi_sales_details.id_user', 'tbl_user.id_user');
-        if ($ket_waktu == 1) {
-            $data = $data->whereRaw('Date(invoice_date) = CURDATE()');
+        $data = DB::table('transaksi_sales');
+        if ($status == 1) {
+            $tgl = date('Y-m-d');
+            if ($namatoko == 0) {
+                $data = DB::table('transaksi_sales')->where('approve', '1')->get();
+            } else {
+                if ($ket_waktu == 1) {
+                    $data = $data->where('approve', '1')->where('invoice_date', $tgl)->where('customer_id', $namatoko)->get();
+                } elseif ($ket_waktu == 2) {
+                    $data = $data->where('approve', '1')->whereMonth('invoice_date', $filterbulan)->whereYear('invoice_date', $filtertahun)->where('customer_id', $namatoko)->get();
+                } elseif ($ket_waktu == 3) {
+                    $data = $data->where('approve', '1')->whereYear('invoice_date', $filter_year)->where('customer_id', $namatoko)->get();
+                } elseif ($ket_waktu == 4) {
+                    $data = $data->where('approve', '1')->whereBetween('invoice_date', [$waktuawal, $waktuakhir])->where('customer_id', $namatoko)->get();
+                } elseif ($ket_waktu == 0) {
+                    $data = DB::table('transaksi_sales')->where('approve', '1')->where('customer_id', $namatoko)->get();
+                }
+            }
+        } else if ($status == 2) {
+            $tgl = date('Y-m-d');
+            if ($namatoko == 0) {
+                $data = DB::table('transaksi_sales')->where('approve', '2')->get();
+            } else {
+                if ($ket_waktu == 1) {
+                    $data = $data->where('approve', '2')->where('invoice_date', $tgl)->where('customer_id', $namatoko)->get();
+                } elseif ($ket_waktu == 2) {
+                    $data = $data->where('approve', '2')->whereMonth('invoice_date', $filterbulan)->whereYear('invoice_date', $filtertahun)->where('customer_id', $namatoko)->get();
+                } elseif ($ket_waktu == 3) {
+                    $data = $data->where('approve', '2')->whereYear('invoice_date', $filter_year)->where('customer_id', $namatoko)->get();
+                } elseif ($ket_waktu == 4) {
+                    $data = $data->where('approve', '2')->whereBetween('invoice_date', [$waktuawal, $waktuakhir])->where('customer_id', $namatoko)->get();
+                } elseif ($ket_waktu == 0) {
+                    $data = DB::table('transaksi_sales')->where('approve', '2')->where('customer_id', $namatoko)->get();
+                }
+            }
+        } else {
+            $tgl = date('Y-m-d');
+            if ($namatoko == 0) {
+                $data = DB::table('transaksi_sales')->where('approve', '0')->get();
+            } else {
+                if ($ket_waktu == 1) {
+                    $data = $data->where('approve', '0')->where('invoice_date', $tgl)->where('customer_id', $namatoko)->get();
+                } elseif ($ket_waktu == 2) {
+                    $data = $data->where('approve', '0')->whereMonth('invoice_date', $filterbulan)->whereYear('invoice_date', $filtertahun)->where('customer_id', $namatoko)->get();
+                } elseif ($ket_waktu == 3) {
+                    $data = $data->where('approve', '0')->whereYear('invoice_date', $filter_year)->where('customer_id', $namatoko)->get();
+                } elseif ($ket_waktu == 4) {
+                    $data = $data->where('approve', '0')->whereBetween('invoice_date', [$waktuawal, $waktuakhir])->where('customer_id', $namatoko)->get();
+                } elseif ($ket_waktu == 0) {
+                    $data = DB::table('transaksi_sales')->where('approve', '0')->where('customer_id', $namatoko)->get();
+                }
+            }
         }
-        if ($ket_waktu == 2) {
-            $data = $data->whereMonth('invoice_date', $filterbulan)->whereYear('invoice_date', $filtertahun);
-        }
-        if ($ket_waktu == 3) {
-            $data = $data->whereYear('invoice_date', $filter_year);
-        }
-        if ($ket_waktu == 4) {
-            $data = $data->whereBetween('invoice_date', [$waktuawal, $waktuakhir]);
-        }
-        $data = $data->where('tbl_user.id_cabang', $id_cabang)->get();
 
         $init = array();
         foreach ($data as $a) {
@@ -56,12 +94,13 @@ class SalesTransaksiReport extends Controller
                     'term_until' => $a->term_until,
                     'totalsales' => $a->totalsales,
                     'dp' => $a->dp,
-                    'diskon' => $a->diskon,
                     'status' => $a->status,
+                    'diskon' => $a->diskon,
                     'transaksi_tipe' => $a->transaksi_tipe,
                     'nama_sales' => $namasales,
                     'nama_customer' => $customer->nama_customer,
-                    'id_cabang' => $customer->id_cabang
+                    'id_cabang' => $customer->id_cabang,
+                    'approve' => $a->approve
                 );
             }
         }
@@ -152,4 +191,11 @@ class SalesTransaksiReport extends Controller
         }
         return view('report.salestransaksi.tabledetail', compact('datas'));
     }
+
+    // public function datatransaksi($id)
+    // {
+    //     $data = DB::table('transaksi_sales')->where('invoice_id', $id)->get();
+    // dd($data);
+    //     return view('pages.transaksi.salestransaksi.edit', compact('data'));
+    // }
 }

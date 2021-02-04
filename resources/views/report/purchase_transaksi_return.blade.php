@@ -34,7 +34,7 @@
                             <td>Invoice Date</td>
                         </tr>
                         <tr>
-                            <td>{{tanggal_indonesia($datatmp[0]['return_date'])}}</td>
+                            <td>{{date('d-m-Y',strtotime($datatmp[0]['return_date']))}}</td>
                         </tr>
                     </table>
                 </div>
@@ -95,7 +95,7 @@
             <div class="row">
             <div class="col-sm-8">
                     <p>............................</p>
-                    <p>Tanggal : {{tanggal_indonesia('d-m-Y')}}</p>
+                    <p>Tanggal : {{date('d-m-Y')}}</p>
                 </div>
                 <div class="col-sm-4">
                 <p>............................</p>

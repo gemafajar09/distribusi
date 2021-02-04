@@ -18,7 +18,7 @@
         @foreach ($hasil as $a)
         <tr>
         <td>{{$a['invoice_id']}}</td>
-        <td>{{tanggal_indonesia($a['invoice_date'])}}</td>
+        <td>{{date('d-m-Y',strtotime($a['invoice_date']))}}</td>
         <td>{{$a['nama_sales']}}</td>
         <td>{{$a['nama_customer']}}</td>
         <td>Rp.{{number_format($a['totalsales'])}}</td>

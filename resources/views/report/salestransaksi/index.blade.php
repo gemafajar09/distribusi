@@ -23,6 +23,20 @@
         </select>
         <br>
         <div id="wadah"></div>
+        <h6>Status</h6>
+        <select name="" id="status" class="form-control">
+            <option value="0">-- Pilih Status --</option>
+            <option value="1">Approve</option>
+            <option value="2">Disapprove</option>
+        </select>
+        <br>
+        <h6>Nama Toko</h6>
+        <select name="" id="toko" class="selectpicker form-control" data-live-search="true" autocomplete="off" data-size="5">
+            <option value="0">-- Pilih Toko --</option>
+            @foreach ($toko as $namatoko)
+            <option value="{{$namatoko->id_customer}}">{{$namatoko->nama_customer}}</option>
+            @endforeach
+        </select>
         <br>
         <div class="range" id="range">
             <legend>Range</legend>
@@ -69,6 +83,18 @@
     function pilihanfilter()
     {
         var id_cabang = '{{session()->get('cabang')}}'
+        var statusapprove = $('#status').val()
+        if(statusapprove == null)
+        {
+            statusapprove = 0;
+        }
+
+        var namatoko = $('#toko').val()
+        if(namatoko == null)
+        {
+            namatoko = 0;
+        }
+
         var filtertahun = $('#year').val()
         if(filtertahun == null)
         {
@@ -99,8 +125,9 @@
             waktuakhir = 0;
         }
         var ket_waktu = $('#ket_waktu').val();
+        console.log(ket_waktu);
 
-        $('#isitable').load("{{ route('table_sales_transaksi') }}/"+id_cabang+ "/" + ket_waktu + "/"+  filtertahun +"/" + filterbulan + "/" +filter_tahun + "/" +waktuawal + "/" +waktuakhir)
+        $('#isitable').load("{{ route('table_sales_transaksi') }}/"+id_cabang+ "/" + statusapprove + "/"+ namatoko + "/" + ket_waktu + "/"+  filtertahun +"/" + filterbulan + "/" +filter_tahun + "/" +waktuawal + "/" +waktuakhir)
     }
 
     $("#waktu_awal" ).prop( "readonly", true );

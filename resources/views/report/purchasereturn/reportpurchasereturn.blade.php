@@ -34,7 +34,7 @@
                 <tr>
                 <td>{{$d->return_id}}</td>
                 <td>{{$d->nama_suplier}}</td>
-                <td>{{tanggal_indonesia($d->return_date)}}</td>
+                <td>{{date('d-m-Y',strtotime($d->return_date))}}</td>
                 <td>{{"Rp " . number_format($d->price,2,',','.')}}</td>
                 </tr>
                 @endforeach

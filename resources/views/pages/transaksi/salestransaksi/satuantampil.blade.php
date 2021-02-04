@@ -1,5 +1,5 @@
-<?php 
-$no = 0; 
+<?php
+$no = 0;
 ?>
 @foreach($isi as $a)
 <?php

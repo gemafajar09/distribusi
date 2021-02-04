@@ -34,7 +34,7 @@
                             <td>Invoice Date</td>
                         </tr>
                         <tr>
-                            <td>{{tanggal_indonesia($datatmp[0]['invoice_date'])}}</td>
+                            <td>{{date('d-m-Y',strtotime($datatmp[0]['invoice_date']))}}</td>
                         </tr>
                     </table>
                 </div>
@@ -71,7 +71,7 @@
                             <td>TERM</td>
                         </tr>
                         <tr>
-                            <td>{{tanggal_indonesia($datatmp[0]['term_until'])}}</td>
+                            <td>{{date('d-m-Y',strtotime($datatmp[0]['term_until']))}}</td>
                         </tr>
                     </table>
                 </div>
@@ -119,7 +119,7 @@
             <div class="row">
             <div class="col-sm-8">
                     <p>............................</p>
-                    <p>Tanggal : {{tanggal_indonesia('d-m-Y')}}</p>
+                    <p>Tanggal : {{date('d-m-Y',strtotime(date('Y-m-d')))}}</p>
                 </div>
                 <div class="col-sm-4">
                 <p>............................</p>

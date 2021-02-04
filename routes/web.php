@@ -69,6 +69,10 @@ Route::group(['namespace' => 'Admin'], function () {
 
 Route::group(['namespace' => 'Transaksi'], function () {
     Route::group(['prefix' => 'sales_transaksi'], function () {
+        Route::get('/transaksi_edit/{id?}', 'EditTransaksiController@index')->name('transaksi_sales_edit');
+        Route::get('/datatableskeranjang', 'EditTransaksiController@datatableskeranjang')->name('datatableskeranjang');
+
+        //
         Route::get('/sales_transaction', 'TransaksiSalesController@index')->name('sales_transaction');
         Route::get('/datatablessales', 'TransaksiSalesController@datatablessales')->name('datatablessales');
         Route::get('/fakturs/{id}/{type}/{id_cabang}', 'TransaksiSalesController@faktur');
@@ -134,7 +138,8 @@ Route::group(['namespace' => 'Report'], function () {
 
     Route::group(['prefix' => 'sales_transaksi'], function () {
         Route::get('/report', 'SalesTransaksiReport@index')->name('sales_transaksi');
-        Route::get('/table_sales_transaksi/{id_cabang?}/{ket_waktu?}/{filtertahun?}/{filterbulan?}/{filter_year?}/{waktuawal?}/{waktuakhir?}', 'SalesTransaksiReport@table')->name('table_sales_transaksi');
+
+        Route::get('/table_sales_transaksi/{id_cabang?}/{status?}/{namatoko?}/{ket_waktu?}/{filtertahun?}/{filterbulan?}/{filter_year?}/{waktuawal?}/{waktuakhir?}', 'SalesTransaksiReport@table')->name('table_sales_transaksi');
     });
 
     Route::group(['prefix' => 'sales_achievement'], function () {
@@ -172,7 +177,6 @@ Route::group(['namespace' => 'Report'], function () {
         Route::get('/rekap_transaksi/{id_cabang}/{waktu}', 'StokReportController@rekap_transaksi');
     });
 });
-
 
 Route::get('/login', 'LoginController@index')->name('login');
 Route::post('/login', 'LoginController@postLogin')->name('postLogin');

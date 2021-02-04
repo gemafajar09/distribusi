@@ -45,7 +45,7 @@
             <td>{{$d['jumlah']}}</td>
             <td>{{$d['jumlah_fisik']}}</td>
             <td>{{$d['selisih']}}</td>
-            <td>{{tanggal_indonesia($d['update_opname'])}}
+            <td>{{date('d-m-Y',strtotime($d['update_opname']))}}
             </td>
             <td>@if($d['balance']=='0')
                 {{"Not Balance"}}

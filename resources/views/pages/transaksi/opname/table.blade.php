@@ -43,7 +43,7 @@
                 @if(empty($d['update_opname']))
                 {{"Not Update"}}
                 @else
-                {{tanggal_indonesia($d['update_opname'])}}
+                {{date('d-m-Y',strtotime($d['update_opname']))}}
                 @endif
             </td>
             <td>@if(empty($d['selisih']))

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Transaksi;
+
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\TransaksiSales;
@@ -11,16 +12,15 @@ class ApprovesalesController extends Controller
     public function index()
     {
         $trans = DB::table('transaksi_sales')
-            ->where('transaksi_sales.approve','0')
+            ->leftJoin('tbl_customer', 'transaksi_sales.customer_id', 'tbl_customer.id_customer')
+            ->where('transaksi_sales.approve', '0')
             ->get();
         $data['list'] = array();
-        foreach($trans as $a)
-        {
-            $sales = DB::table('tbl_sales')->where('id_sales',$a->sales_id)->first();
-            if($sales == NULL)
-            {
+        foreach ($trans as $a) {
+            $sales = DB::table('tbl_sales')->where('id_sales', $a->sales_id)->first();
+            if ($sales == NULL) {
                 $namasales = '';
-            }else{
+            } else {
                 $namasales = $sales->nama_sales;
             }
             $data['list'][] = array(
@@ -28,24 +28,53 @@ class ApprovesalesController extends Controller
                 'invoice_date' => $a->invoice_date,
                 'totalsales' => $a->totalsales,
                 'diskon' => $a->diskon,
+                'nama_customer' => $a->nama_customer,
                 'id_transaksi_sales' => $a->id_transaksi_sales,
-                'nama_sales' => $namasales
+                'nama_sales' => $namasales,
+                'status' => $a->status,
+                'transaksi_tipe' => $a->transaksi_tipe
             );
         }
-        return view('pages.transaksi.salestransaksi.approve',$data);
+        return view('pages.transaksi.salestransaksi.approve', $data);
     }
 
     public function approve(Request $r)
     {
         $status = $r->status;
         $id_transaksi = $r->id_transaksi;
-        $edit = DB::table('transaksi_sales')->where('id_transaksi_sales',$id_transaksi)->update(['approve' => $status]);
-
-        if($edit == TRUE)
-        {
-            return response()->json(['status' => 200]);
-        }else{
-            return response()->json(['message' => 'Data Tidak Ditemukan', 'status' => 404]);
+        if ($status == 1) {
+            $edit = DB::table('transaksi_sales')->where('id_transaksi_sales', $id_transaksi)->update(['approve' => $status]);
+            if ($edit == TRUE) {
+                return response()->json(['status' => 200]);
+            } else {
+                return response()->json(['message' => 'Data Tidak Ditemukan', 'status' => 404]);
+            }
+        } else if ($status == 2) {
+            $disaprove = DB::table('transaksi_sales_details')->where('invoice_id', $r->invoice_id)->get();
+            foreach ($disaprove as $i => $d) {
+                $cek = DB::table('tbl_stok')->where('stok_id', $d->stok_id)->first();
+                $jml = $cek->jumlah + $d->quantity;
+                $update = DB::table('tbl_stok')->where('stok_id', $d->stok_id)->update(['jumlah' => $jml]);
+                DB::table('transaksi_sales')->where('invoice_id', $r->invoice_id)->update(['approve' => 2]);
+                if ($update == TRUE) {
+                    return response()->json(['status' => 200]);
+                } else {
+                    return response()->json(['message' => 'Data Tidak Ditemukan', 'status' => 404]);
+                }
+            }
+        } else {
+            $select = DB::table('transaksi_sales_details')->where('invoice_id', $r->invoice_id)->get();
+            foreach ($select as $i => $d) {
+                // $cek = DB::table('tbl_stok')->where('stok_id', $d->stok_id)->first();
+                // $jml = $cek->jumlah + $d->quantity;
+                // $update = DB::table('tbl_stok')->where('stok_id', $d->stok_id)->update(['jumlah' => $jml]);
+                $update = DB::table('transaksi_sales')->where('invoice_id', $r->invoice_id)->update(['approve' => 0]);
+                if ($update == TRUE) {
+                    return response()->json(['status' => 200]);
+                } else {
+                    return response()->json(['message' => 'Data Tidak Ditemukan', 'status' => 404]);
+                }
+            }
         }
     }
 
@@ -130,6 +159,6 @@ class ApprovesalesController extends Controller
                 'quantity' => implode(" ", $stokquantity)
             );
         }
-        return view('pages.transaksi.salestransaksi.tabledetailapp',compact('datas'));
+        return view('pages.transaksi.salestransaksi.tabledetailapp', compact('datas'));
     }
 }

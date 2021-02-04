@@ -51,6 +51,7 @@ class TransaksiSalesController extends Controller
             ->select('*')
             ->get();
         $data['warehouse'] = DB::table('tbl_gudang')->where('id_cabang', $cabang)->get();
+
         return view('pages.transaksi.salestransaksi.index', $data);
     }
 
@@ -258,6 +259,7 @@ class TransaksiSalesController extends Controller
             ->where('produk_id', $id_produk)
             ->select('spesial_nominal')
             ->first();
+        // echo json_encode($id_customer);
         if ($data == TRUE) {
             return response()->json(['data' => $data, 'status' => 200]);
         } else {
@@ -516,9 +518,10 @@ class TransaksiSalesController extends Controller
         $datas['data_cabang'] = DB::table('tbl_cabang')->where('id_cabang', $id_cabang)->first();
         $data = DB::table('transaksi_sales_details')
             ->join('tbl_stok', 'tbl_stok.stok_id', 'transaksi_sales_details.stok_id')
+            ->join('tbl_gudang', 'tbl_stok.id_gudang', 'tbl_gudang.id_gudang')
             ->join('tbl_produk', 'tbl_produk.produk_id', 'tbl_stok.produk_id')
             ->join('tbl_type_produk', 'tbl_produk.id_type_produk', 'tbl_type_produk.id_type_produk')
-            ->select('tbl_produk.produk_id', 'tbl_produk.produk_brand', 'tbl_produk.produk_nama', 'tbl_produk.produk_harga', 'price', 'transaksi_sales_details.*', 'tbl_type_produk.nama_type_produk', 'tbl_stok.stok_id')
+            ->select('tbl_produk.produk_id', 'tbl_produk.produk_brand', 'tbl_produk.produk_nama', 'tbl_produk.produk_harga', 'price', 'transaksi_sales_details.*', 'tbl_type_produk.nama_type_produk', 'tbl_stok.stok_id', 'tbl_gudang.nama_gudang')
             ->where('transaksi_sales_details.invoice_id', $id)
             ->get();
         $format = '%d %s |';
@@ -592,6 +595,7 @@ class TransaksiSalesController extends Controller
                 'amount' => ($a->quantity * $a->harga_satuan) - $a->diskon,
                 'id_transaksi_tmp' => $a->id_transaksi_detail,
                 'quantity' => implode(" ", $stokquantity),
+                'nama_gudang' => $a->nama_gudang
             );
         }
         if ($type == 'CUSTOMER') {
@@ -602,7 +606,7 @@ class TransaksiSalesController extends Controller
                 ->first();
             $datas['sales'] = array(
                 'note' => $sales->note,
-                'nama_sales' => '-',
+                'id_sales' => $sales->sales_id,
                 'invoice_date' => $sales->invoice_date,
                 'transaksi_tipe' => $sales->transaksi_tipe,
                 'dp' => $sales->dp,
@@ -928,7 +932,7 @@ class TransaksiSalesController extends Controller
             $input->stok_id = $r->stockId;
             $input->price = $r->prices;
             $input->quantity = $r->quantity;
-            $input->diskon = $r->amount;
+            $input->diskon = $r->disc;
             $input->id_user = $r->id_user;
             $input->harga_satuan = $r->satuan;
             $input->id_sales = $r->id_sales;

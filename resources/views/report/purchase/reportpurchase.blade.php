@@ -37,7 +37,7 @@
                 @foreach($dataisi as $d)
                 <tr>
                    <td>{{$d['invoice_id']}}</td>
-                   <td>{{tanggal_indonesia($d['invoice_date'])}}</td>
+                   <td>{{date('d-m-Y',strtotime($d['invoice_date']))}}</td>
                    <td>{{$d['transaksi_tipe']}}</td>
                    <td>{{"Rp " . number_format($d['total'],2,',','.')}}</td>
                     <td>{{"Rp " . number_format($d['diskon'],2,',','.')}}</td>

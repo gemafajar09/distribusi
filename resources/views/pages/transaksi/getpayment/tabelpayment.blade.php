@@ -61,13 +61,13 @@
         @foreach($hasil as $a)
         <tr>
             <td>{{$a['invoice_id']}}</td>
-            <td>{{tanggal_indonesia($a['invoice_date'])}}</td>
+            <td>{{date('d-m-Y',strtotime($a['invoice_date']))}}</td>
             <td>{{$a['nama_customer']}}</td>
             <td>{{$a['nama_sales']}}</td>
             <td>Rp.{{number_format($a['totalsales'])}}</td>
             <td>Rp.{{number_format($a['payment'])}}</td>
             <td>Rp.{{number_format($a['remaining'])}}</td>
-            <td>{{tanggal_indonesia($a['term_until'])}}</td>
+            <td>{{date('d-m-Y',strtotime($a['term_until']))}}</td>
             <td>{{$a['status']}}</td>
             <td style="text-align:center">
                 <button onclick="cekpayment('{{$a['invoice_id']}}')" type="button" class="btn btn-success btn-sm"><i class="fa fa-eye"></i></button>

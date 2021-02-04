@@ -57,6 +57,7 @@ class GetpaymentController extends Controller
             ->where('transaksi_sales.approve', '1')
             ->where('tbl_customer.nama_customer', 'Like', '%' . $r->nama . '%')
             ->get();
+        // dd($datas);
 
         if ($datas == TRUE) {
             $data['hasil'] = [];
@@ -66,7 +67,7 @@ class GetpaymentController extends Controller
                 // dd($sales->nama_sales);
                 if ($cek != NULL) {
                     $payment = $cek->payment;
-                    $sisa = $a->totalsales - $cek->payment;
+                    $sisa = $a->totalsales - $cek->payment - $a->diskon;
                 } else {
                     $payment = 0;
                     $sisa = $a->totalsales - 0;
@@ -76,12 +77,13 @@ class GetpaymentController extends Controller
                 } else {
                     $namasales = '-';
                 }
+                $totals = $a->totalsales - $a->diskon;
                 $data['hasil'][] = array(
                     'invoice_id' => $a->invoice_id,
                     'invoice_date' => $a->invoice_date,
                     'nama_customer' => $a->nama_customer,
                     'nama_sales' => $namasales,
-                    'totalsales' => $a->totalsales,
+                    'totalsales' => $totals,
                     'payment' => $payment,
                     'remaining' => $sisa,
                     'term_until' => $a->term_until,

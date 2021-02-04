@@ -170,6 +170,9 @@ Route::group(['namespace' => 'Transaksi'], function () {
     Route::post('invoice', 'TransaksiSalesController@invoice');
     Route::get('tampilstok/{cabang}', 'TransaksiSalesController@tampilstok');
     Route::get('totalpenjualan/{id_cabang}/{date}', 'TransaksiSalesController@totalpenjualan');
+    // api transaksi sales edit
+    Route::post('tambahkeranjangedit', 'EditTransaksiController@tambahkeranjang');
+    Route::post('registransaksi', 'EditTransaksiController@registransaksiedit');
 
     // api android produk
     Route::get('apiproduk/{cabang}', 'TransaksiSalesController@apiproduk');

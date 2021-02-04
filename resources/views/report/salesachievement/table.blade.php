@@ -27,7 +27,7 @@
         ?>
         <tr>
             <td>{{$d->invoice_id}}</td>
-            <td>{{tanggal_indonesia($d->invoice_date)}}</td>
+            <td>{{date('d-m-Y',strtotime($d->invoice_date))}}</td>
             <td>{{$d->transaksi_tipe}}</td>
             <td>{{$d->nama_customer}}</td>
             <td>Rp.{{number_format($d->totalsales)}}</td>

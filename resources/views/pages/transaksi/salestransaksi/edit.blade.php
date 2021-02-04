@@ -1,6 +1,6 @@
 @extends('layout.index')
 
-@section('page-title','Sales Trasaction')
+@section('page-title','Edit Sales Trasaction')
 @section('content')
 
 <div class="row">
@@ -273,7 +273,7 @@
                                     <input checked type="checkbox" id="print">&nbsp;<i>Print Invoice</i>
                                 </div>
                                 <br>
-                                <button type="button" onclick="register()" class="btn btn-outline-success">Register
+                                <button type="button" onclick="registerulang()" class="btn btn-outline-success">Register
                                     Transaction </button>
                             </div>
                         </div>
@@ -303,7 +303,6 @@
     </div>
 
     <script>
-
     function stokcari(cabang)
     {
         axios.get("{{url('/api/tampilstok')}}/"+cabang).then(function(res){
@@ -314,60 +313,51 @@
         })
     }
 
-        $(document).ready(function () {
-
-            $('#isibody').load("{{ route('datatablessales')}}")
-            $('#discon').val('0')
-
-            $('#downpayment').val('0')
-
-        })
-
         function dp(nilai) {
             var after = convertToAngka($('#afterdiscount').val())
             var hasil = after - nilai.value
             $('#creditbalance').val(convertToRupiah(hasil))
         }
 
-        $('#salesType').change(function () {
-            var body = $(this).val()
-            var user = "{{Session()->get('id')}}"
-            if (body == 'CUSTOMER') {
-                axios.post("{{url('/api/invoice')}}", {
-                    'type': body,
-                    'user': user
-                }).then(function (res) {
-                    var data = res.data
-                    $('#invoiceid').val(data.inv)
-                    $('#tampilsales').hide()
-                    $('#tampilsales1').hide()
-                    $('#warehouse').hide()
-                })
-            } else if (body == 'TAKING ORDER') {
-                axios.post("{{url('/api/invoice')}}", {
-                    'type': body,
-                    'user': user
-                }).then(function (res) {
-                    var data = res.data
-                    $('#invoiceid').val(data.inv)
-                    $('#tampilsales').show()
-                    $('#tampilsales1').show()
-                })
-            } else if (body == 'CANVASING') {
-                axios.post("{{url('/api/invoice')}}", {
-                    'type': body,
-                    'user': user
-                }).then(function (res) {
-                    var data = res.data
-                    $('#invoiceid').val(data.inv)
-                    $('#tampilsales').show()
-                    $('#tampilsales1').show()
-                    $('#warehouse').show()
-                })
-            }
-        })
+    //     $('#salesType').change(function () {
+    //         var body = $(this).val()
+    //         var user = "{{Session()->get('id')}}"
+    //         if (body == 'CUSTOMER') {
+    //             axios.post("{{url('/api/invoice')}}", {
+    //                 'type': body,
+    //                 'user': user
+    //             }).then(function (res) {
+    //                 var data = res.data
+    //                 $('#invoiceid').val(data.inv)
+    //                 $('#tampilsales').hide()
+    //                 $('#tampilsales1').hide()
+    //                 $('#warehouse').hide()
+    //             })
+    //         } else if (body == 'TAKING ORDER') {
+    //             axios.post("{{url('/api/invoice')}}", {
+    //                 'type': body,
+    //                 'user': user
+    //             }).then(function (res) {
+    //                 var data = res.data
+    //                 $('#invoiceid').val(data.inv)
+    //                 $('#tampilsales').show()
+    //                 $('#tampilsales1').show()
+    //             })
+    //         } else if (body == 'CANVASING') {
+    //             axios.post("{{url('/api/invoice')}}", {
+    //                 'type': body,
+    //                 'user': user
+    //             }).then(function (res) {
+    //                 var data = res.data
+    //                 $('#invoiceid').val(data.inv)
+    //                 $('#tampilsales').show()
+    //                 $('#tampilsales1').show()
+    //                 $('#warehouse').show()
+    //             })
+    //         }
+    //     })
 
-        function register() {
+        function registerulang() {
             var id_cabang = '{{session()->get('cabang')}}'
             var salestype = $('#salesType').val()
             var invoiceid = $('#invoiceid').val()
@@ -382,7 +372,7 @@
             var dp = convertToAngka($('#downpayment').val())
             var totalsales = convertToAngka($('#totalsales').val())
             var id_user = "{{Session()->get('id')}}"
-            axios.post("{{url('/api/rekaptransaksi')}}", {
+            axios.post("{{url('/api/registransaksi')}}", {
                 'salestype': salestype,
                 'invoiceid': invoiceid,
                 'invoicedate': invoicedate,
@@ -403,25 +393,25 @@
                     if (check == true) {
                         window.open("{{url('/sales_transaksi/fakturs')}}/" + data.invoice_id + "/" + salestype+ "/"+id_cabang,
                             '_blank');
-                        window.location.reload()
+                        window.location = '/sales_transaksi/report';
                     } else {
-                        window.location.reload()
+                        window.location = '/sales_transaksi/report';
                     }
                 }
 
             })
         }
 
-        // function disco(nilai) {
-        //     var persen = nilai.value
-        //     var tot = convertToAngka($('#totalsales').val())
-        //     var hasil = tot - ((tot * persen) / 100)
-        //     $('#potongan').val(convertToRupiah((tot * persen) / 100))
-        //     $('#downpayment').val(convertToRupiah((tot * persen) / 100))
-        //     $('#creditbalance').val(convertToRupiah(hasil))
-        //     $('#afterdiscount').val(convertToRupiah(tot - (tot * persen) / 100))
+    //     // function disco(nilai) {
+    //     //     var persen = nilai.value
+    //     //     var tot = convertToAngka($('#totalsales').val())
+    //     //     var hasil = tot - ((tot * persen) / 100)
+    //     //     $('#potongan').val(convertToRupiah((tot * persen) / 100))
+    //     //     $('#downpayment').val(convertToRupiah((tot * persen) / 100))
+    //     //     $('#creditbalance').val(convertToRupiah(hasil))
+    //     //     $('#afterdiscount').val(convertToRupiah(tot - (tot * persen) / 100))
 
-        // }
+    //     // }
 
         function potong(potongan) {
             var nilai = potongan.value
@@ -429,20 +419,20 @@
             $('#afterdiscount').val(convertToRupiah(tot - nilai))
         }
 
-        // function diskon1(nilai) {
-        //     var persen = nilai.value
-        // }
+    //     // function diskon1(nilai) {
+    //     //     var persen = nilai.value
+    //     // }
 
-        // function diskon(disc) {
-        //     var diskon = disc.value
-        //     var harga = convertToAngka($('#prices').val())
-        //     var totalsemua = (harga * diskon) / 100
-        //     $('#amount').val(totalsemua)
-        // }
+    //     // function diskon(disc) {
+    //     //     var diskon = disc.value
+    //     //     var harga = convertToAngka($('#prices').val())
+    //     //     var totalsemua = (harga * diskon) / 100
+    //     //     $('#amount').val(totalsemua)
+    //     // }
 
-        function show() {
-            $('#entry').modal()
-        }
+    //     function show() {
+    //         $('#entry').modal()
+    //     }
 
         function hargakhusus(stokid, customer, harga) {
             axios.post("{{url('/api/hargakusus')}}", {
@@ -450,7 +440,6 @@
                 'customer': customer
             }).then(function (res) {
                 var data = res.data
-                console.log(data);
                 if (data.status == 404) {
                     $('#prices').val(convertToRupiah(harga))
                 } else {
@@ -497,6 +486,50 @@
             }
         })
 
+        $(document).ready(function () {
+            // Munculkan Data
+            document.getElementsByName('invoiceid')[0].value = "<?php echo $transaksi->invoice_id ?>";
+            document.getElementsByName('invoiceDate')[0].value = "<?php echo $transaksi->invoice_date ?>";
+            document.getElementsByName('salesType')[0].value = "<?php echo $transaksi->sales_type ?>";
+            document.getElementsByName('customerid')[0].value = "<?php echo $transaksi->customer_id ?>";
+            document.getElementsByName('namacustomer')[0].value = "<?php echo $transaksi->nama_customer ?>";
+
+            // DataTable Keranjang
+            $('#isibody').load("{{ route('datatableskeranjang')}}")
+
+            // Sales Type
+            var body = "<?php echo $transaksi->sales_type ?>"
+            console.log(body);
+            var user = "{{Session()->get('id')}}"
+            if (body == 'CUSTOMER') {
+                    $('#tampilsales').hide()
+                    $('#tampilsales1').hide()
+                    $('#warehouse').hide()
+                    document.getElementsByName('customerid')[0].value = "<?php echo $transaksi->customer_id ?>";
+                    document.getElementsByName('namacustomer')[0].value = "<?php echo $transaksi->nama_customer ?>";
+            } else if (body == 'TAKING ORDER') {
+                    $('#tampilsales').show()
+                    $('#tampilsales1').show()
+                    document.getElementsByName('salesmanId')[0].value = "<?php echo $transaksi->sales_id ?>";
+                    document.getElementsByName('namaSales')[0].value = "<?php echo $transaksi->nama_sales ?>";
+            } else if (body == 'CANVASING') {
+                    document.getElementsByName('warehouse')[0].value = "<?php echo $transaksi->id_warehouse ?>";
+                    document.getElementsByName('salesmanId')[0].value = "<?php echo $transaksi->sales_id ?>";
+                    document.getElementsByName('namaSales')[0].value = "<?php echo $transaksi->nama_sales ?>";
+                    $('#tampilsales').show()
+                    $('#tampilsales1').show()
+                    $('#warehouse').show()
+            }
+            // Radio
+            var radiocash = "<?php echo $transaksi->transaksi_tipe ?>";
+            var radiocredit = "<?php echo $transaksi->transaksi_tipe ?>";
+            if(radiocash == 'Cash'){
+                $('#radiocash').prop('checked', true)
+            }else if(radiocredit == 'Credit'){
+                $('#radiocredit').prop('checkced', true)
+            }
+        });
+
         $('#radiocash').click(function () {
             var radio = document.getElementById('radiocash').checked
             if (radio == true) {
@@ -519,8 +552,6 @@
             // cek diskon kosong atau tidak
 
             var amount = $('#amount').val()
-
-
 
             // hitung jumlah
             if ($('#jumlah1').val() == '0') {
@@ -575,7 +606,7 @@
                 var hargasatuan = prices / uni3
                 var total = parseInt(jumlah1 * uni1) + parseInt(jumlah2 * uni2) + parseInt(jumlah3 * uni3)
             }
-            axios.post("{{url('/api/addkeranjang')}}", {
+            axios.post("{{url('/api/tambahkeranjangedit')}}", {
                 'invoiceid': invoiceid,
                 'stockId': stockId,
                 'produkid': produkid,
@@ -589,7 +620,7 @@
                 data = res.data
                 if (data.status == 200) {
                     toastr.info('Success')
-                    $('#isibody').load("{{ route('datatablessales')}}")
+                    $('#isibody').load("{{ route('datatableskeranjang')}}")
                     kosong()
                 }
             }).catch(function (err) {
@@ -597,32 +628,32 @@
             })
         }
 
-        $('#salesmanId').change(function () {
-            var salesid = $(this).val()
+    //     $('#salesmanId').change(function () {
+    //         var salesid = $(this).val()
 
-            axios.post("{{url('/api/getsalestrans')}}", {
-                'sales_id': salesid
-            }).then(function (res) {
-                var data = res.data.data
-                console.log(data.nama_sales)
-                $('#namasales').val(data.nama_sales)
-            }).catch(function (err) {
-                toastr.warning('Oops Ada Kesalahan')
-            })
-        })
+    //         axios.post("{{url('/api/getsalestrans')}}", {
+    //             'sales_id': salesid
+    //         }).then(function (res) {
+    //             var data = res.data.data
+    //             console.log(data.nama_sales)
+    //             $('#namasales').val(data.nama_sales)
+    //         }).catch(function (err) {
+    //             toastr.warning('Oops Ada Kesalahan')
+    //         })
+    //     })
 
-        $('#customerid').change(function () {
-            var customerid = $(this).val()
+    //     $('#customerid').change(function () {
+    //         var customerid = $(this).val()
 
-            axios.post("{{url('/api/getCustomer')}}", {
-                'customer_id': customerid
-            }).then(function (res) {
-                var data = res.data.data
-                $('#namacustomer').val(data.nama_customer)
-            }).catch(function (err) {
-                toastr.warning('Oops Ada Kesalahan')
-            })
-        })
+    //         axios.post("{{url('/api/getCustomer')}}", {
+    //             'customer_id': customerid
+    //         }).then(function (res) {
+    //             var data = res.data.data
+    //             $('#namacustomer').val(data.nama_customer)
+    //         }).catch(function (err) {
+    //             toastr.warning('Oops Ada Kesalahan')
+    //         })
+    //     })
 
         function pilihstok(stokid) {
             var customer = $('#customerid').val()
@@ -639,7 +670,7 @@
                 $('#produkbrand').val(data.produk_brand)
                 $('#produknama').val(data.produk_nama)
                 // cek harga kusus
-                hargakhusus(data.produk_id, customer, data.produk_harga)
+                hargakhusus(stokid, customer, data.produk_harga)
                 console.log(hargakhusus);
                 $('#tmpmodal').modal('hide')
             }).catch(function (err) {
